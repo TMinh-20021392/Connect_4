@@ -6,7 +6,7 @@
 std::vector<std::pair<std::string, Image_resource*>> Resource_manager::images;
 std::vector<std::pair<std::string, Sound_resource*>> Resource_manager::sounds;
 
-Image_resource* Resource_manager::get_image(const char* file) {
+Image_resource* Resource_manager::GetImage(const char* file) {
 
 	// Check each entry until we find one that matches file as file is being 
 	// used an ID
@@ -20,10 +20,9 @@ Image_resource* Resource_manager::get_image(const char* file) {
 	return nullptr;
 }
 
-Sound_resource* Resource_manager::get_sound(const char* file) {
+Sound_resource* Resource_manager::GetSound(const char* file) {
 
-	// Check each entry until we find one that matches file as file is being 
-	// used an ID
+	// Check each entry until we find one that matches file as file is being used an ID
 	for (unsigned int i = 0; i < sounds.size(); i++) {
 		if (sounds[i].first == file) {
 			return sounds[i].second;
@@ -34,28 +33,27 @@ Sound_resource* Resource_manager::get_sound(const char* file) {
 	return nullptr;
 }
 
-Image_resource* Resource_manager::load_image(const char* file) {
+Image_resource* Resource_manager::LoadImage(const char* file) {
 
 	// Load a resource file, store the instance and then return it
-	Image_resource* image = new Image_resource();
-	image->load_from_file(file);
-	images.insert(images.end(), std::make_pair(file, image));
-	return get_image(file);
+	auto* image = new Image_resource();
+	image->LoadFromFile(file);
+	images.emplace(images.end(), file, image);
+	return GetImage(file);
 }
 
-Sound_resource* Resource_manager::load_sound(const char* file) {
+Sound_resource* Resource_manager::LoadSound(const char* file) {
 
 	// Load a resource file, store the instance and then return it
-	Sound_resource* sound = new Sound_resource();
-	sound->load_from_file(file);
-	sounds.insert(sounds.end(), std::make_pair(file, sound));
-	return get_sound(file);
+	auto* sound = new Sound_resource();
+	sound->LoadFromFile(file);
+	sounds.emplace(sounds.end(), file, sound);
+	return GetSound(file);
 }
 
-void Resource_manager::unload_image(const char* file) {
+void Resource_manager::UnloadImage(const char* file) {
 
-	// Check each entry until we find one that matches file as file is being 
-	// used an ID
+	// Check each entry until we find one that matches file as file is being used an ID
 	for (unsigned int i = 0; i < images.size(); i++) {
 		if (images[i].first == file) {
 
@@ -69,7 +67,7 @@ void Resource_manager::unload_image(const char* file) {
 	}
 }
 
-void Resource_manager::unload_sound(const char* file) {
+void Resource_manager::UnloadSound(const char* file) {
 
 	// Check each entry until we find one that matches file as file is being used an ID
 	for (unsigned int i = 0; i < sounds.size(); i++) {

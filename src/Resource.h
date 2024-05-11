@@ -14,5 +14,5 @@ public:
 	 *
 	 * @return True if a file was loaded successfully
 	 */
-	virtual bool load_from_file(const char* file) = 0;
+	virtual bool LoadFromFile(const char* file) = 0;
 };

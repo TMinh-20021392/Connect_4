@@ -21,7 +21,7 @@ Image_resource::~Image_resource()
 	}
 }
 
-bool Image_resource::load_from_file(const char* file)
+bool Image_resource::LoadFromFile(const char* file)
 {
 	// As only BMPs are supported, ".bmp" is omitted from the filename and appended here
 	std::string path = Setting::image_path + file + ".bmp";
@@ -55,14 +55,14 @@ bool Image_resource::load_from_file(const char* file)
 	return true;
 }
 
-void Image_resource::set_position(int x, int y) {
+void Image_resource::SetPosition(int x, int y) {
 
 	// Update the X and Y positions ready for render()
 	position_x = x;
 	position_y = y;
 }
 
-void Image_resource::set_position_with_size(int x, int y, int w, int h) {
+void Image_resource::SetPositionWithSize(int x, int y, int w, int h) {
 
 	// Update the X and Y positions ready for render()
 	position_x = x;
@@ -73,29 +73,29 @@ void Image_resource::set_position_with_size(int x, int y, int w, int h) {
 	height = h;
 }
 
-void Image_resource::set_position_centered() {
+void Image_resource::SetPositionCenter() {
 
 	// Centre is half the window width of height with half the image width or height subtracted
 	position_x = (Setting::window_width / 2) - (width / 2);
 	position_y = (Setting::window_height / 2) - (height / 2);
 }
 
-void Image_resource::set_position_hidden() {
+void Image_resource::SetPositionHidden() {
 
 	// Place images at negative width and height so they are rendered outside screen
 	position_x = -width;
 	position_y = -height;
 }
 
-int Image_resource::get_position_x() {
+int Image_resource::GetPositionX() {
 	return position_x;
 }
 
-int Image_resource::get_position_y() {
+int Image_resource::GetPositionY() {
 	return position_y;
 }
 
-void Image_resource::render(SDL_Rect* clip_rect)
+void Image_resource::Render(SDL_Rect* clip_rect)
 {
 	// Create a rectangle that defines where the texture should be draw and at what size
 	SDL_Rect dest_rect = {

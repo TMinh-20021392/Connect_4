@@ -5,58 +5,58 @@
 #include "Resource_manager.h"
 #include "Play_state_Two.h"
 #include "Play_state_One.h"
-void Menu_state::init()
+void Menu_state::Init()
 {
     const int ButtonWidth = 40;
     const int ButtonHeight = 10;
     const int TitleWidth = 100;
     const int TitleHeight = Setting::window_height / 3;
-    Resource_manager::load_image("background")->set_position_with_size(0,0,Setting::window_width, Setting::window_height);
-    Resource_manager::load_image("Title")->set_position_with_size((Setting::window_width / 2) - (TitleWidth / 2), 10, 100, TitleHeight);
-    Resource_manager::load_image("ONEPLAYERButton")->set_position_with_size((Setting::window_width / 2) - (ButtonWidth / 2), Setting::window_height / 2, ButtonWidth, ButtonHeight);
-    Resource_manager::load_image("TWOPLAYERButton")->set_position_with_size((Setting::window_width / 2) - (ButtonWidth / 2), Setting::window_height / 2 + ButtonHeight + 5, ButtonWidth, ButtonHeight);
+    Resource_manager::LoadImage("background")->SetPositionWithSize(0,0,Setting::window_width, Setting::window_height);
+    Resource_manager::LoadImage("Title")->SetPositionWithSize((Setting::window_width / 2) - (TitleWidth / 2), 10, 100, TitleHeight);
+    Resource_manager::LoadImage("ONEPLAYERButton")->SetPositionWithSize((Setting::window_width / 2) - (ButtonWidth / 2), Setting::window_height / 2, ButtonWidth, ButtonHeight);
+    Resource_manager::LoadImage("TWOPLAYERButton")->SetPositionWithSize((Setting::window_width / 2) - (ButtonWidth / 2), Setting::window_height / 2 + ButtonHeight + 5, ButtonWidth, ButtonHeight);
 }
 
-void Menu_state::clean_up()
+void Menu_state::Clean()
 {
-    Resource_manager::unload_image("background");
-    Resource_manager::unload_image("Title");
-    Resource_manager::unload_image("ONEPLAYERButton");
-    Resource_manager::unload_image("TWOPLAYERButton");
+    Resource_manager::UnloadImage("background");
+    Resource_manager::UnloadImage("Title");
+    Resource_manager::UnloadImage("ONEPLAYERButton");
+    Resource_manager::UnloadImage("TWOPLAYERButton");
 }
 
-void Menu_state::handle_events(SDL_Event& event)
+void Menu_state::HandleEvent(SDL_Event& event)
 {
     if (event.type == SDL_MOUSEBUTTONDOWN) {
         // Get mouse coords
         int mouse_x;
         int mouse_y;
-        Game::get_mouse_position(&mouse_x, &mouse_y);
+        Game::GetMousePosition(&mouse_x, &mouse_y);
 
         // Check if click falls within box coords
-        if (within_box(mouse_x, mouse_y, 36, 48, 40, 10)) {
-            State_manager::set_state(new Play_state_One());
+        if (WithinBox(mouse_x, mouse_y, 36, 48, 40, 10)) {
+            State_manager::SetState(new Play_state_One());
         }
-        else if (within_box(mouse_x, mouse_y, 36, 63, 40, 10)) {
-            State_manager::set_state(new Play_state_Two());
+        else if (WithinBox(mouse_x, mouse_y, 36, 63, 40, 10)) {
+            State_manager::SetState(new Play_state_Two());
         }
     }
 }
 
-void Menu_state::update()
+void Menu_state::Update()
 {
     // Add any necessary updates here
 }
 
-void Menu_state::render()
+void Menu_state::Render()
 {
-    Resource_manager::get_image("background")->render();
-    Resource_manager::get_image("Title")->render();
-    Resource_manager::get_image("ONEPLAYERButton")->render();
-    Resource_manager::get_image("TWOPLAYERButton")->render();
+    Resource_manager::GetImage("background")->Render();
+    Resource_manager::GetImage("Title")->Render();
+    Resource_manager::GetImage("ONEPLAYERButton")->Render();
+    Resource_manager::GetImage("TWOPLAYERButton")->Render();
 }
 
-bool Menu_state::within_box(int x, int y, int box_position_x, int box_position_y, int box_width, int box_height)
+bool Menu_state::WithinBox(int x, int y, int box_position_x, int box_position_y, int box_width, int box_height)
 {
     // Check four conditions to determine if X and Y are inside the box
     if (x >= box_position_x // Not too far left

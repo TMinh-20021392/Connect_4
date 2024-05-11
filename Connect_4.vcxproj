@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Grid.h" />
+    <ClInclude Include="src\Board.h" />
     <ClInclude Include="src\Image_resource.h" />
     <ClInclude Include="src\Menu_state.h" />
     <ClInclude Include="src\Play_state_One.h" />
@@ -34,7 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Grid.cpp" />
+    <ClCompile Include="src\Board.cpp" />
     <ClCompile Include="src\Image_resource.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Menu_state.cpp" />

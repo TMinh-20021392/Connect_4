@@ -3,35 +3,32 @@
 
 /**
  * Abstract class for state interface
- *
- * Games typically have many states that often need to perform the same functions.
  */
 class State
 {
 public:
     /**
-     * Called when a state is loaded to initialise memory for a state
+     * Called when a state is loaded to init memory for a state
      */
-    virtual void init() = 0;
+    virtual void Init() = 0;
 
     /**
-     * Called first in game loop to handle game events such as button presses, mouse clicks, window resize.
+     * Called first in game loop to handle game events(button presses, mouse clicks, window resize etc)
      */
-    virtual void handle_events(SDL_Event& event) = 0;
+    virtual void HandleEvent(SDL_Event& event) = 0;
 
     /**
-     * Called second in game loop to update game items, scores etc. Game logic will be handled here.
+     * Called second in game loop to update game items, scores etc, handle game logic.
      */
-    virtual void update() = 0;
+    virtual void Update() = 0;
 
     /**
-     * Called third in game loop to render items to the game window. This
-     * should be the only area that items are rendered within.
+     * Called third in game loop to render items to window
      */
-    virtual void render() = 0;
+    virtual void Render() = 0;
 
     /**
      * Called when a state is unloaded to free memory for a state
      */
-    virtual void clean_up() = 0;
+    virtual void Clean() = 0;
 };

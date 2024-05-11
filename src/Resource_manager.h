@@ -15,7 +15,7 @@ public:
 	 * @param file Resource file to return
 	 * @return Image resource
 	 */
-	static Image_resource* get_image(const char* file);
+	static Image_resource* GetImage(const char* file);
 
 	/**
 	 * Returns a loaded sound
@@ -23,7 +23,7 @@ public:
 	 * @param file Resource file to return
 	 * @return Sound resource
 	 */
-	static Sound_resource* get_sound(const char* file);
+	static Sound_resource* GetSound(const char* file);
 
 	/**
 	 * Loads an image and stores it
@@ -31,7 +31,7 @@ public:
 	 * @param file Resource file to load
 	 * @return Image resource
 	 */
-	static Image_resource* load_image(const char* file);
+	static Image_resource* LoadImage(const char* file);
 
 	/**
 	 * Loads a sound and stores it
@@ -39,21 +39,21 @@ public:
 	 * @param file Resource file to load
 	 * @return Sound resource
 	 */
-	static Sound_resource* load_sound(const char* file);
+	static Sound_resource* LoadSound(const char* file);
 
 	/**
 	 * Deletes a image
 	 *
 	 * @param file Resource file to unload
 	 */
-	static void unload_image(const char* file);
+	static void UnloadImage(const char* file);
 
 	/**
 	 * Deletes a sound
 	 *
 	 * @param file Resource file to unload
 	 */
-	static void unload_sound(const char* file);
+	static void UnloadSound(const char* file);
 
 private:
 	/// Stores pointers to instances of an Image_resource

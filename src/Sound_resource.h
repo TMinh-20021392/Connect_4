@@ -11,22 +11,17 @@ public:
 	Sound_resource();
 	~Sound_resource();
 
-	/**
-	 * See Resource Class for documentation
-	 */
-	bool load_from_file(const char* file);
+	bool LoadFromFile(const char* file) override;
 
 	/**
 	 * Plays the loaded sound file
 	 */
-	void play();
+	void PlaySound();
 
 	/**
-	 * Plays the loaded sound only once regardless of how many times this function is called
-	 *
-	 * Once called the sound will not play again
+	 * Plays the loaded sound only once regardless of how many times this function is called, then never plays again
 	 */
-	void play_once_only();
+	void PlaySoundOnce();
 
 private:
 	/// Pointer to the sound file stored as a Mix_Chunk
@@ -35,6 +30,6 @@ private:
 	/// Path to the loaded sound file
 	std::string path;
 
-	/// Flag used by play_once_only() to mark a sound as having been played
+	/// Flag mark a sound as having been played
 	bool played_once_only = false;
 };

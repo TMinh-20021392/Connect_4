@@ -11,18 +11,14 @@ public:
 	/**
 	 * Set the current state to run
 	 *
-	 * The current state will be called from the Game::run() loop
-	 *
-	 * @param state Instance of a state to run
+	 * The current state will be called from the Game::Run() loop
 	 */
-	static void set_state(State* state);
+	static void SetState(State* state);
 
 	/**
 	 * Gets the current running state
-	 *
-	 * @return Instance of the current state
 	 */
-	static State* get_state();
+	static State* GetState();
 
 private:
 	/// Stores pointers to instances of a State

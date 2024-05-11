@@ -5,105 +5,105 @@
 #include "Resource_manager.h"
 #include "Menu_state.h"
 
-void Play_state_Two::init()
+void Play_state_Two::Init()
 {
-	Resource_manager::load_image("cell_sprite");
-	Resource_manager::load_image("grid_overlay");
+	Resource_manager::LoadImage("cell_sprite");
+	Resource_manager::LoadImage("grid_overlay");
 
-	Resource_manager::load_image("red_piece")->set_position_hidden();
-	Resource_manager::load_image("yellow_piece")->set_position_hidden();
+	Resource_manager::LoadImage("red_piece")->SetPositionHidden();
+	Resource_manager::LoadImage("yellow_piece")->SetPositionHidden();
 
-	Resource_manager::load_image("red_wins")->set_position_centered();
-	Resource_manager::load_image("yellow_wins")->set_position_centered();
-	Resource_manager::load_image("draw")->set_position_centered();
+	Resource_manager::LoadImage("red_wins")->SetPositionCenter();
+	Resource_manager::LoadImage("yellow_wins")->SetPositionCenter();
+	Resource_manager::LoadImage("draw")->SetPositionCenter();
 
-	Resource_manager::load_sound("valid_move");
-	Resource_manager::load_sound("invalid_move");
-	Resource_manager::load_sound("win");
-	Resource_manager::load_sound("draw");
+	Resource_manager::LoadSound("valid_move");
+	Resource_manager::LoadSound("invalid_move");
+	Resource_manager::LoadSound("win");
+	Resource_manager::LoadSound("draw");
 
-	grid.init();
+	grid.Init();
 
 	// Get the current position of the red piece for the drop animation
-	red_piece_x = Resource_manager::load_image("red_piece")->get_position_x();
-	red_piece_y = Resource_manager::load_image("red_piece")->get_position_y();
+	red_piece_x = Resource_manager::LoadImage("red_piece")->GetPositionX();
+	red_piece_y = Resource_manager::LoadImage("red_piece")->GetPositionY();
 
 	// Get the current position of the yellow piece for the drop animation
-	yellow_piece_x = Resource_manager::load_image("yellow_piece")->get_position_x();
-	yellow_piece_y = Resource_manager::load_image("yellow_piece")->get_position_y();
+	yellow_piece_x = Resource_manager::LoadImage("yellow_piece")->GetPositionX();
+	yellow_piece_y = Resource_manager::LoadImage("yellow_piece")->GetPositionY();
 
 	// Store previous move
 	previous_play_col = -1;
 	previous_play_row = -1;
-	previous_play_sprite = grid.sprite_red;
+	previous_play_sprite = Board::Sprites::red;
 
 	// Must divide nicely into 16 or it wont fall on the right parts of the Y axis during animations causing glitches
 	drop_speed = 8;
 }
 
-void Play_state_Two::clean_up()
+void Play_state_Two::Clean()
 {
-	Resource_manager::unload_image("cell_sprite");
-	Resource_manager::unload_image("grid_overlay");
+	Resource_manager::UnloadImage("cell_sprite");
+	Resource_manager::UnloadImage("grid_overlay");
 
-	Resource_manager::unload_image("red_piece");
-	Resource_manager::unload_image("yellow_piece");
+	Resource_manager::UnloadImage("red_piece");
+	Resource_manager::UnloadImage("yellow_piece");
 
-	Resource_manager::unload_image("red_wins");
-	Resource_manager::unload_image("yellow_wins");
-	Resource_manager::unload_image("draw");
+	Resource_manager::UnloadImage("red_wins");
+	Resource_manager::UnloadImage("yellow_wins");
+	Resource_manager::UnloadImage("draw");
 
-	Resource_manager::unload_sound("valid_move");
-	Resource_manager::unload_sound("invalid_move");
-	Resource_manager::unload_sound("win");
-	Resource_manager::unload_sound("draw");
+	Resource_manager::UnloadSound("valid_move");
+	Resource_manager::UnloadSound("invalid_move");
+	Resource_manager::UnloadSound("win");
+	Resource_manager::UnloadSound("draw");
 }
 
-void Play_state_Two::handle_events(SDL_Event& event)
+void Play_state_Two::HandleEvent(SDL_Event& event)
 {
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
-		advance_game();
+		AdvanceGame();
 	}
 }
 
-void Play_state_Two::update()
+void Play_state_Two::Update()
 {
-	animate_drop_on_play();
+	AnimateDroppingPiece();
 }
 
-void Play_state_Two::render()
+void Play_state_Two::Render()
 {
 	// Render yellow and red pieces now so that they will appear under grid overlay that is rendered next
-	Resource_manager::get_image("red_piece")->render();
-	Resource_manager::get_image("yellow_piece")->render();
+	Resource_manager::GetImage("red_piece")->Render();
+	Resource_manager::GetImage("yellow_piece")->Render();
 
-	grid.render();
+	grid.Render();
 
 	// Return if drop animation hasn't finished yet
-	if (drop_animation_is_playing()) {
+	if (IsDropAnimationPlaying()) {
 		return;
 	}
 
 	// Depending on win or draw conditions, display a win or draw message overlay image
-	if (win_type == grid.player_red) {
-		Resource_manager::get_image("red_wins")->render();
-		Resource_manager::get_sound("win")->play_once_only();
+	if (win_type == 1) {
+		Resource_manager::GetImage("red_wins")->Render();
+		Resource_manager::GetSound("win")->PlaySoundOnce();
 
 	}
-	else if (win_type == grid.player_yellow) {
-		Resource_manager::get_image("yellow_wins")->render();
-		Resource_manager::get_sound("win")->play_once_only();
+	else if (win_type == 2) {
+		Resource_manager::GetImage("yellow_wins")->Render();
+		Resource_manager::GetSound("win")->PlaySoundOnce();
 	}
-	else if (win_type == grid.player_red + grid.player_yellow) {
-		Resource_manager::get_image("draw")->render();
-		Resource_manager::get_sound("draw")->play_once_only();
+	else if (win_type == 3) {
+		Resource_manager::GetImage("draw")->Render();
+		Resource_manager::GetSound("draw")->PlaySoundOnce();
 	}
 }
 
-void Play_state_Two::advance_game() {
+void Play_state_Two::AdvanceGame() {
 
 	// Don't allow a player to advance the game before drop animation has finished
-	if (drop_animation_is_playing()) {
+	if (IsDropAnimationPlaying()) {
 		return;
 	}
 
@@ -113,18 +113,18 @@ void Play_state_Two::advance_game() {
 		// Get mouse coordinates and normalise to row and columns
 		int mouse_x;
 		int mouse_y;
-		Game::get_mouse_position(&mouse_x, &mouse_y);
+		Game::GetMousePosition(&mouse_x, &mouse_y);
 		int col = mouse_x / (Setting::window_width  / Setting::grid_columns);
 		// Get the row that the play can be dropped to
-		int row = grid.get_bottommost_available_row_in_column(col);
+		int row = grid.GetBottommostAvailableRowInColumn(col);
 
 		// Play a move
-		if (play_a_move(col, row)) {
-			check_for_win_or_draw(col, row);
+		if (Play(col, row)) {
+			CheckForGameEnd(col, row);
 		}
 		// Otherwise invalid move
 		else {
-			Resource_manager::get_sound("invalid_move")->play();
+			Resource_manager::GetSound("invalid_move")->PlaySound();
 		}
 
 	}
@@ -132,18 +132,18 @@ void Play_state_Two::advance_game() {
 	// Else if there was a win or draw, reset the winner, make next sprite red and clear the grid
 	else {
 		win_type = 0;
-		sprite_to_play = grid.sprite_red;
-		grid.clear();
-		State_manager::set_state(new Menu_state());
+		sprite_to_play = Board::Sprites::red;
+		grid.Clear();
+		State_manager::SetState(new Menu_state());
 	}
 }
 
-bool Play_state_Two::play_a_move(int col, int row) {
+bool Play_state_Two::Play(int col, int row) {
 
 	// Since we will reuse an animation piece so we update the previous play before moving the animation piece. 
 	// Before running this code, "previous_play_col" and "previous_play_row" are checked to prevent running on first move when no previous play was made.
 	if (previous_play_col >= 0 && previous_play_row >= 0) {
-		grid.cell[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
+		grid.cells[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
 	}
 
 	// If there is a row space in the column for the play to be dropped to
@@ -154,27 +154,27 @@ bool Play_state_Two::play_a_move(int col, int row) {
 		previous_play_row = row;
 		previous_play_sprite = sprite_to_play;
 
-		if (sprite_to_play == grid.sprite_red) {
+		if (sprite_to_play == Board::Sprites::red) {
 			// Set the next sprite
-			sprite_to_play = grid.sprite_yellow;
+			sprite_to_play = Board::Sprites::yellow;
 			
 			// Set X axis value of red piece so the animation will start and define how far to drop
 			red_piece_x = col * Setting::grid_sprite_width;
 			red_piece_to_y = row * Setting::grid_sprite_height;
 
 			// Mark the cell as played by red player
-			grid.cell[col][row].played_by = grid.player_red;
+			grid.cells[col][row].played_by = Board::Players::red;
 		}
 		else {
 			// Set the next sprite
-			sprite_to_play = grid.sprite_red;
+			sprite_to_play = Board::Sprites::red;
 
 			// Set X axis value of yellow piece so animation will start and define how far to drop
 			yellow_piece_x = col * Setting::grid_sprite_width;
 			yellow_piece_to_y = row * Setting::grid_sprite_height;
 
 			// Mark the cell as played by yellow player
-			grid.cell[col][row].played_by = grid.player_yellow;
+			grid.cells[col][row].played_by = Board::Players::yellow;
 		}
 
 		return true;
@@ -183,63 +183,63 @@ bool Play_state_Two::play_a_move(int col, int row) {
 	return false;
 }
 
-bool Play_state_Two::check_for_win_or_draw(int col, int row) {
+bool Play_state_Two::CheckForGameEnd(int col, int row) {
 	// Check to see if the last move caused a win for red
-	if (grid.check_for_win(col, row, grid.player_red)) {
-		win_type = grid.player_red;
+	if (grid.CheckWin(col, row, Board::Players::red)) {
+		win_type = 1;
 		return true;
 	}
 
 	// Check to see if the last move caused a win for yellow
-	else if (grid.check_for_win(col, row, grid.player_yellow)) {
-		win_type = grid.player_yellow;
+	else if (grid.CheckWin(col, row, Board::Players::yellow)) {
+		win_type = 2;
 		return true;
 	}
 
 	// Check to see if the last move caused a draw
-	else if (grid.check_for_draw()) {
-		win_type = grid.player_red + grid.player_yellow;
+	else if (grid.CheckForDraw()) {
+		win_type = 3;
 		return true;
 	}
 
 	return false;
 }
 
-void Play_state_Two::animate_drop_on_play() {
+void Play_state_Two::AnimateDroppingPiece() {
 
 	// Hidden position is -width for X and -height for Y for init image. 
-	// play_a_move() set X axis value of red or yellow piece, check if animation needs to start
+	// Play() set X axis value of red or yellow piece, check if animation needs to start
 
 	// Drop animation - advance red piece on Y axis
 	if (red_piece_x != -Setting::grid_sprite_width) {
 		red_piece_y += drop_speed;
-		Resource_manager::get_image("red_piece")->set_position(red_piece_x, red_piece_y);
+		Resource_manager::GetImage("red_piece")->SetPosition(red_piece_x, red_piece_y);
 	}
 
-	// Check if we need to stop red piece drop animation by checking current Y axis value against red_piece_to_y set by play_a_move()
+	// Check if we need to stop red animation by checking current Y axis value against red_piece_to_y set by Play()
 	if (red_piece_y == red_piece_to_y) {
 		red_piece_x = -Setting::grid_sprite_width;
 		red_piece_y = -Setting::grid_sprite_height;
 
-		Resource_manager::get_sound("valid_move")->play();
+		Resource_manager::GetSound("valid_move")->PlaySound();
 	}
 
 	// Drop animation - advance yellow piece on Y axis
 	if (yellow_piece_x != -Setting::grid_sprite_width) {
 		yellow_piece_y += drop_speed;
-		Resource_manager::get_image("yellow_piece")->set_position(yellow_piece_x, yellow_piece_y);
+		Resource_manager::GetImage("yellow_piece")->SetPosition(yellow_piece_x, yellow_piece_y);
 	}
 
-	// Check if we need to stop yellow piece drop animation by checking current Y axis value against yellow_piece_to_y set by play_a_move()
+	// Check if we need to stop yellow animation by checking current Y axis value against yellow_piece_to_y set by Play()
 	if (yellow_piece_y == yellow_piece_to_y) {
 		yellow_piece_x = -Setting::grid_sprite_width;
 		yellow_piece_y = -Setting::grid_sprite_height;
 
-		Resource_manager::get_sound("valid_move")->play();
+		Resource_manager::GetSound("valid_move")->PlaySound();
 	}
 }
 
-bool Play_state_Two::drop_animation_is_playing() {
+bool Play_state_Two::IsDropAnimationPlaying() {
 	// True if red or yellow piece is currently animating
 	if (red_piece_y != -Setting::grid_sprite_height
 		|| yellow_piece_y != -Setting::grid_sprite_height) {

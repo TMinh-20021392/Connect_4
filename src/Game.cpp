@@ -87,7 +87,7 @@ void Game::Run()
 		while (SDL_PollEvent(&event)) {
 
 			// Let the state handle events
-			State_manager::get_state()->handle_events(event);
+			State_manager::GetState()->HandleEvent(event);
 
 			// Handle window quit event
 			if (event.type == SDL_QUIT) {
@@ -96,13 +96,13 @@ void Game::Run()
 		}
 
 		// Update data of the state
-		State_manager::get_state()->update();
+		State_manager::GetState()->Update();
 
 		// Clear screen
 		SDL_RenderClear(renderer);
 
 		// Render the state
-		State_manager::get_state()->render();
+		State_manager::GetState()->Render();
 
 		// Update screen taking into account SDL v-sync. This stops the game loop from running too fast
 		SDL_RenderPresent(renderer);
@@ -115,7 +115,7 @@ void Game::Stop()
 	running = false;
 }
 
-void Game::get_mouse_position(int* mouse_x, int* mouse_y)
+void Game::GetMousePosition(int* mouse_x, int* mouse_y)
 {
 	SDL_GetMouseState(mouse_x, mouse_y);
 	*mouse_x = *mouse_x / Setting::scale_factor;

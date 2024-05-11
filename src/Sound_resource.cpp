@@ -20,7 +20,7 @@ Sound_resource::~Sound_resource()
 	path = "";
 }
 
-bool Sound_resource::load_from_file(const char* file)
+bool Sound_resource::LoadFromFile(const char* file)
 {
 	// As only WAVs are supported, ".wav" is omitted from the filename and appended here
 	path = Setting::sound_path + file + ".wav";
@@ -35,7 +35,7 @@ bool Sound_resource::load_from_file(const char* file)
 	return true;
 }
 
-void Sound_resource::play()
+void Sound_resource::PlaySound()
 {
 	if (chunk == nullptr) {
 		std::cout << "Mix_PlayChannel Error: Couldn't play chunk for " << path << ". SDL_mixer Error: " << Mix_GetError() << std::endl;
@@ -49,9 +49,9 @@ void Sound_resource::play()
 	}
 }
 
-void Sound_resource::play_once_only() 
+void Sound_resource::PlaySoundOnce() 
 {
 	if (played_once_only == false) {
-		play();
+		PlaySound();
 	}
 }

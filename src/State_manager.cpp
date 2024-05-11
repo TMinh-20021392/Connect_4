@@ -2,13 +2,12 @@
 
 std::vector<State*> State_manager::states;
 
-void State_manager::set_state(State* state)
+void State_manager::SetState(State* state)
 {
-	// Call clean_up() on the old state free it from memory and remove it from the vector
 	if (!states.empty()) {
 
-		// Call clean up function on state to free a state's memory
-		states.back()->clean_up();
+		// Call Clean() on state to free a state's memory
+		states.back()->Clean();
 
 		// Delete instance since it was created with new
 		delete states.back();
@@ -20,9 +19,9 @@ void State_manager::set_state(State* state)
 
 	// Store the new state and call its init()
 	states.push_back(state);
-	states.back()->init();
+	states.back()->Init();
 }
 
-State* State_manager::get_state() {
+State* State_manager::GetState() {
 	return states.back();
 }

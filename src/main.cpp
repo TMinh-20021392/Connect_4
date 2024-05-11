@@ -14,7 +14,7 @@ int main(int argc, char* args[])
 		std::cout << "Application initialisation error. Exiting. " << std::endl;
 	}
 
-	State_manager::set_state(new Menu_state());
+	State_manager::SetState(new Menu_state());
 
 	game.Run();
 	return 0;

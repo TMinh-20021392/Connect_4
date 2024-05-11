@@ -42,7 +42,7 @@
     <ClInclude Include="src\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Grid.h">
+    <ClInclude Include="src\Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Menu_state.h">
@@ -65,7 +65,7 @@
     <ClCompile Include="src\Play_state_Two.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Grid.cpp">
+    <ClCompile Include="src\Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Game.cpp">
