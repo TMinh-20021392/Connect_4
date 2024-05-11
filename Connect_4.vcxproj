@@ -54,11 +54,6 @@
     <Image Include="images\red_piece.bmp" />
     <Image Include="images\red_wins.bmp" />
     <Image Include="images\Title.bmp" />
-    <Image Include="images\title_background.bmp" />
-    <Image Include="images\title_f.bmp" />
-    <Image Include="images\title_o.bmp" />
-    <Image Include="images\title_r.bmp" />
-    <Image Include="images\title_u.bmp" />
     <Image Include="images\TWOPLAYERButton.bmp" />
     <Image Include="images\yellow_piece.bmp" />
     <Image Include="images\yellow_wins.bmp" />

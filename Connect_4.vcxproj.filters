@@ -100,21 +100,6 @@
     <Image Include="images\red_wins.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="images\title_background.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="images\title_f.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="images\title_o.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="images\title_r.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="images\title_u.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="images\yellow_piece.bmp">
       <Filter>Resource Files</Filter>
     </Image>

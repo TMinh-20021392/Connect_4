@@ -6,16 +6,16 @@
  */
 struct Setting
 {
-	/// Name that appears in the application titlebar
+	/// App title
 	const static char* game_name; 
 
-	/// Path to the icon that appears in the application titlebar
+	/// App icon path
 	const static char* icon_path;
 
-	/// Path to images relative to the source files, must end with _
+	/// Path to images relative to the source files, must end with /
 	static const std::string image_path;
 
-	/// Path to sounds relative to the source files, must end with _
+	/// Path to sounds relative to the source files, must end with /
 	static const std::string sound_path;
 
 	/// Set first element to -1 to disable colour keying, otherwise set to a colour such as { 0, 0xFF, 0xFF }
@@ -27,31 +27,31 @@ struct Setting
 	/// Set to false for peaceful development
 	static const bool play_sounds = true;
 
-	/// Changing the scale factor adjusts the size of the images and window
+	/// Changing the scale factor adjusts the size of images and window
 	static const int scale_factor = 8;
 
-	/// Width of the clipped sprite sheet image used for the grid
+	/// Width of clipped sprite sheet image used for the grid
 	static const int grid_sprite_width = 16;
 
-	/// Height of the clipped sprite sheet image used for the grid
+	/// Height of clipped sprite sheet image used for the grid
 	static const int grid_sprite_height = 16;
 
 	static const int grid_columns = 7;
 
 	static const int grid_rows = 6;
 
-	/// The win count of consecutive pieces in a row, column or diagonal
+	/// The win count of consecutive pieces
 	static const int win_count = 4;
 
-	/// Width of the application window
+	/// App window width
 	static const int window_width = grid_columns * grid_sprite_width;
 
-	/// Height of the application window
+	/// App window height
 	static const int window_height = grid_rows * grid_sprite_height;
 
-	/// Width of the playing area without the scaling factor applied
+	/// Game area width without the scaling factor
 	static const int actual_window_width = window_width * scale_factor;
 
-	/// Height of the playing area without the scaling factor applied
+	/// Game area height without the scaling factor
 	static const int actual_window_height = window_height * scale_factor;
 };

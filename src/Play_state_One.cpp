@@ -173,7 +173,7 @@ int Play_state_One::GetAIMove() {
 			grid.cells[col][row].played_by = Board::Players::yellow;
 
 			// Calculate the score for this move using Minimax
-			int score = Minimax(4, false);
+			int score = Minimax(5, false);
 
 			// Undo the simulated move
 			grid.cells[col][row].played_by = Board::Players::nobody;

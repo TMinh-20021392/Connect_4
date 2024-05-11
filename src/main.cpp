@@ -11,7 +11,7 @@ int main(int argc, char* args[])
 	Game game;
 
 	if (!game.Init(Setting::game_name, Setting::window_width, Setting::window_height)) {
-		std::cout << "Application initialisation error. Exiting. " << std::endl;
+		std::cout << "Error. Exiting. " << std::endl;
 	}
 
 	State_manager::SetState(new Menu_state());

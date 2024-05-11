@@ -4,7 +4,7 @@
 #include "Sound_resource.h"
 
 /**
- * Manages game resource files such as images and sounds
+ * Manages resource files such as images and sounds
  */
 class Resource_manager
 {
