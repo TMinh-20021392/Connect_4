@@ -22,7 +22,7 @@ void Play_state_Two::Init()
 	Resource_manager::LoadSound("win");
 	Resource_manager::LoadSound("draw");
 
-	grid.Init();
+	board.Init();
 
 	// Get the current position of the red piece for the drop animation
 	red_piece_x = Resource_manager::LoadImage("red_piece")->GetPositionX();
@@ -73,11 +73,11 @@ void Play_state_Two::Update()
 
 void Play_state_Two::Render()
 {
-	// Render yellow and red pieces now so that they will appear under grid overlay that is rendered next
+	// Render yellow and red pieces now so that they will appear under board overlay that is rendered next
 	Resource_manager::GetImage("red_piece")->Render();
 	Resource_manager::GetImage("yellow_piece")->Render();
 
-	grid.Render();
+	board.Render();
 
 	// Return if drop animation hasn't finished yet
 	if (IsDropAnimationPlaying()) {
@@ -110,30 +110,29 @@ void Play_state_Two::AdvanceGame() {
 	// If no winner
 	if (!win_type) {
 
-		// Get mouse coordinates and normalise to row and columns
+		// Get mouse coordinates and normalize to column
 		int mouse_x;
 		int mouse_y;
 		Game::GetMousePosition(&mouse_x, &mouse_y);
 		int col = mouse_x / (Setting::window_width  / Setting::grid_columns);
 		// Get the row that the play can be dropped to
-		int row = grid.GetBottommostAvailableRowInColumn(col);
+		int row = board.GetBottommostAvailableRowInColumn(col);
 
 		// Play a move
 		if (Play(col, row)) {
 			CheckForGameEnd(col, row);
 		}
-		// Otherwise invalid move
 		else {
 			Resource_manager::GetSound("invalid_move")->PlaySound();
 		}
 
 	}
 
-	// Else if there was a win or draw, reset the winner, make next sprite red and clear the grid
+	// Else if there was a win or draw, reset the winner, make next sprite red and clear the board
 	else {
 		win_type = 0;
 		sprite_to_play = Board::Sprites::red;
-		grid.Clear();
+		board.Clear();
 		State_manager::SetState(new Menu_state());
 	}
 }
@@ -141,12 +140,12 @@ void Play_state_Two::AdvanceGame() {
 bool Play_state_Two::Play(int col, int row) {
 
 	// Since we will reuse an animation piece so we update the previous play before moving the animation piece. 
-	// Before running this code, "previous_play_col" and "previous_play_row" are checked to prevent running on first move when no previous play was made.
+	// Before running this code, check "previous_play_col" and "previous_play_row" to prevent running first move where no previous play existed.
 	if (previous_play_col >= 0 && previous_play_row >= 0) {
-		grid.cells[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
+		board.cells[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
 	}
 
-	// If there is a row space in the column for the play to be dropped to
+	// If there is a row space in the column to play
 	if (row >= 0) {
 
 		// Store previous play
@@ -155,26 +154,26 @@ bool Play_state_Two::Play(int col, int row) {
 		previous_play_sprite = sprite_to_play;
 
 		if (sprite_to_play == Board::Sprites::red) {
-			// Set the next sprite
+			// Toggle next sprite
 			sprite_to_play = Board::Sprites::yellow;
 			
 			// Set X axis value of red piece so the animation will start and define how far to drop
 			red_piece_x = col * Setting::grid_sprite_width;
 			red_piece_to_y = row * Setting::grid_sprite_height;
 
-			// Mark the cell as played by red player
-			grid.cells[col][row].played_by = Board::Players::red;
+			// Mark the cell as played by red
+			board.cells[col][row].played_by = Board::Players::red;
 		}
 		else {
-			// Set the next sprite
+			// Toggle next sprite
 			sprite_to_play = Board::Sprites::red;
 
 			// Set X axis value of yellow piece so animation will start and define how far to drop
 			yellow_piece_x = col * Setting::grid_sprite_width;
 			yellow_piece_to_y = row * Setting::grid_sprite_height;
 
-			// Mark the cell as played by yellow player
-			grid.cells[col][row].played_by = Board::Players::yellow;
+			// Mark the cell as played by yellow
+			board.cells[col][row].played_by = Board::Players::yellow;
 		}
 
 		return true;
@@ -185,19 +184,19 @@ bool Play_state_Two::Play(int col, int row) {
 
 bool Play_state_Two::CheckForGameEnd(int col, int row) {
 	// Check to see if the last move caused a win for red
-	if (grid.CheckWin(col, row, Board::Players::red)) {
+	if (board.CheckWin(col, row, Board::Players::red)) {
 		win_type = 1;
 		return true;
 	}
 
 	// Check to see if the last move caused a win for yellow
-	else if (grid.CheckWin(col, row, Board::Players::yellow)) {
+	else if (board.CheckWin(col, row, Board::Players::yellow)) {
 		win_type = 2;
 		return true;
 	}
 
 	// Check to see if the last move caused a draw
-	else if (grid.CheckForDraw()) {
+	else if (board.CheckForDraw()) {
 		win_type = 3;
 		return true;
 	}

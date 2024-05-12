@@ -16,7 +16,7 @@ public:
 	void Clean() override;
 private:
 	/// Instance of the Board class
-	Board grid;
+	Board board;
 
 	/// The sprite colour to be played and be toggled throughout moves. Red goes first
 	Board::Sprites sprite_to_play = Board::Sprites::red;
@@ -36,8 +36,6 @@ private:
 	bool CheckForDraw();
 
 	int EvaluateBoard();
-
-	int GetPlayerMove();
 
 	/**
 	 * Try to play a move

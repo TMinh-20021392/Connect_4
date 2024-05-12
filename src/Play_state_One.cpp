@@ -23,7 +23,7 @@ void Play_state_One::Init()
 	Resource_manager::LoadSound("win");
 	Resource_manager::LoadSound("draw");
 
-	grid.Init();
+	board.Init();
 
 	// Get the current position of the red piece for the drop animation
 	red_piece_x = Resource_manager::LoadImage("red_piece")->GetPositionX();
@@ -38,7 +38,7 @@ void Play_state_One::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide nicely into 16 or it won't fall on the right parts of the Y axis during animations causing glitches
+	// Must divide nicely into 16 or it wont fall on the right parts of the Y axis during animations causing glitches
 	drop_speed = 8;
 }
 
@@ -78,7 +78,7 @@ void Play_state_One::Render()
 	Resource_manager::GetImage("red_piece")->Render();
 	Resource_manager::GetImage("yellow_piece")->Render();
 
-	grid.Render();
+	board.Render();
 
 	// Return if drop animation hasn't finished yet
 	if (IsDropAnimationPlaying()) {
@@ -105,41 +105,31 @@ void Play_state_One::AdvanceGame() {
 	if (IsDropAnimationPlaying()) {
 		return;
 	}
-	if (!win_type) {
-		// Human player's turn
-		int col = GetPlayerMove();
-		int row = grid.GetBottommostAvailableRowInColumn(col);
 
-		if (Play(col, row)) {
-			if (CheckForGameEnd(col, row)) {
-				return; // Exit early if the game is won or drawn
-			}
-			// Reset the game if there's a winner or draw after human player's move
-			if (win_type) {
-				win_type = 0;
-				sprite_to_play = Board::Sprites::red;
-				grid.Clear();
-				State_manager::SetState(new Menu_state());
-				return;
-			}
-		}
-		else {
+	// If no winner
+	if (!win_type) {
+		// Get mouse coordinates and normalize to column
+		int mouse_x;
+		int mouse_y;
+		Game::GetMousePosition(&mouse_x, &mouse_y);
+		int col = mouse_x / (Setting::window_width / Setting::grid_columns);
+
+		// Get the row that the player's piece can be dropped to
+		int row = board.GetBottommostAvailableRowInColumn(col);
+
+		if (row == -1 || (!Play(col, row) || CheckForGameEnd(col, row))) {
 			Resource_manager::GetSound("invalid_move")->PlaySound();
+			return; // Exit if the column full
 		}
 	}
 
 	// AI player's turn
 	if (!win_type) {
 		int ai_col = GetAIMove();
-		int ai_row = grid.GetBottommostAvailableRowInColumn(ai_col);
+		int ai_row = board.GetBottommostAvailableRowInColumn(ai_col);
 
-		if (Play(ai_col, ai_row)) {
-			if (CheckForGameEnd(ai_col, ai_row)) {
-				return; // Exit early if the game ended
-			}
-		}
-		else {
-			// Handle invalid move for AI player
+		if (!Play(ai_col, ai_row) || CheckForGameEnd(ai_col, ai_row)) {
+			return;
 		}
 	}
 
@@ -147,7 +137,7 @@ void Play_state_One::AdvanceGame() {
 	if (win_type) {
 		win_type = 0;
 		sprite_to_play = Board::Sprites::red;
-		grid.Clear();
+		board.Clear();
 		State_manager::SetState(new Menu_state());
 	}
 }
@@ -157,7 +147,7 @@ int Play_state_One::GetAIMove() {
 
 	// Find all available columns
 	for (int col = 0; col < Setting::grid_columns; ++col) {
-		if (grid.GetBottommostAvailableRowInColumn(col) >= 0) {
+		if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
 			available_columns.push_back(col);
 		}
 	}
@@ -169,14 +159,14 @@ int Play_state_One::GetAIMove() {
 
 		for (int col : available_columns) {
 			// Simulate a move for the AI player
-			int row = grid.GetBottommostAvailableRowInColumn(col);
-			grid.cells[col][row].played_by = Board::Players::yellow;
+			int row = board.GetBottommostAvailableRowInColumn(col);
+			board.cells[col][row].played_by = Board::Players::yellow;
 
 			// Calculate the score for this move using Minimax
 			int score = Minimax(5, false);
 
 			// Undo the simulated move
-			grid.cells[col][row].played_by = Board::Players::nobody;
+			board.cells[col][row].played_by = Board::Players::nobody;
 
 			// Update the best move if this move has a higher score
 			if (score > bestScore) {
@@ -200,16 +190,16 @@ int Play_state_One::Minimax(int depth, bool isMaximizingPlayer) {
 	if (isMaximizingPlayer) {
 		int bestScore = INT_MIN;
 		for (int col = 0; col < Setting::grid_columns; ++col) {
-			if (grid.GetBottommostAvailableRowInColumn(col) >= 0) {
+			if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
 				// Simulate a move for the AI player
-				int row = grid.GetBottommostAvailableRowInColumn(col);
-				grid.cells[col][row].played_by = Board::Players::yellow;
+				int row = board.GetBottommostAvailableRowInColumn(col);
+				board.cells[col][row].played_by = Board::Players::yellow;
 
 				// Recur for the next depth with the opponent's turn
 				int score = Minimax(depth - 1, false);
 
 				// Undo the simulated move
-				grid.cells[col][row].played_by = Board::Players::nobody;
+				board.cells[col][row].played_by = Board::Players::nobody;
 
 				bestScore = std::max(bestScore, score);
 			}
@@ -219,16 +209,16 @@ int Play_state_One::Minimax(int depth, bool isMaximizingPlayer) {
 	else {
 		int bestScore = INT_MAX;
 		for (int col = 0; col < Setting::grid_columns; ++col) {
-			if (grid.GetBottommostAvailableRowInColumn(col) >= 0) {
+			if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
 				// Simulate a move for the human player
-				int row = grid.GetBottommostAvailableRowInColumn(col);
-				grid.cells[col][row].played_by = Board::Players::red;
+				int row = board.GetBottommostAvailableRowInColumn(col);
+				board.cells[col][row].played_by = Board::Players::red;
 
 				// Recur for the next depth with the AI player's turn
 				int score = Minimax(depth - 1, true);
 
 				// Undo the simulated move
-				grid.cells[col][row].played_by = Board::Players::nobody;
+				board.cells[col][row].played_by = Board::Players::nobody;
 
 				bestScore = std::min(bestScore, score);
 			}
@@ -239,7 +229,7 @@ int Play_state_One::Minimax(int depth, bool isMaximizingPlayer) {
 
 bool Play_state_One::CheckForDraw() {
 	for (int col = 0; col < Setting::grid_columns; ++col) {
-		if (grid.GetBottommostAvailableRowInColumn(col) >= 0) {
+		if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
 			// If there is at least one available column, the game is not a draw
 			return false;
 		}
@@ -257,10 +247,10 @@ int Play_state_One::EvaluateBoard() {
 	int col = previous_play_col;
 	int row = previous_play_row;
 
-	if (grid.CheckWin(col, row, Board::Players::yellow)) {
+	if (board.CheckWin(col, row, Board::Players::yellow)) {
 		return 1000; // Positive score for AI win
 	}
-	else if (grid.CheckWin(col, row, Board::Players::red)) {
+	else if (board.CheckWin(col, row, Board::Players::red)) {
 		return -1000; // Negative score for opponent win
 	}
 	else {
@@ -268,19 +258,12 @@ int Play_state_One::EvaluateBoard() {
 	}
 }
 
-int Play_state_One::GetPlayerMove() {
-	int mouse_x;
-	int mouse_y;
-	Game::GetMousePosition(&mouse_x, &mouse_y);
-	return mouse_x / (Setting::window_width / Setting::grid_columns);
-}
-
 bool Play_state_One::Play(int col, int row) {
 
 	// Since we will reuse an animation piece, update the previous play before moving the animation piece. 
 	// Before running this code, check "previous_play_col" and "previous_play_row" to prevent running first move where no previous play existed.
 	if (previous_play_col >= 0 && previous_play_row >= 0) {
-		grid.cells[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
+		board.cells[previous_play_col][previous_play_row].current_sprite = previous_play_sprite;
 	}
 
 	// If there is a row space in the column to play
@@ -300,7 +283,7 @@ bool Play_state_One::Play(int col, int row) {
 			red_piece_to_y = row * Setting::grid_sprite_height;
 
 			// Mark the cell as played by red
-			grid.cells[col][row].played_by = Board::Players::red;
+			board.cells[col][row].played_by = Board::Players::red;
 		}
 		else {
 			// Toggle next sprite
@@ -311,7 +294,7 @@ bool Play_state_One::Play(int col, int row) {
 			yellow_piece_to_y = row * Setting::grid_sprite_height;
 
 			// Mark the cell as played by yellow
-			grid.cells[col][row].played_by = Board::Players::yellow;
+			board.cells[col][row].played_by = Board::Players::yellow;
 		}
 
 		return true;
@@ -322,19 +305,19 @@ bool Play_state_One::Play(int col, int row) {
 
 bool Play_state_One::CheckForGameEnd(int col, int row) {
 	// Check to see if the last move caused a win for red
-	if (grid.CheckWin(col, row, Board::Players::red)) {
+	if (board.CheckWin(col, row, Board::Players::red)) {
 		win_type = 1;
 		return true;
 	}
 
 	// Check to see if the last move caused a win for yellow
-	else if (grid.CheckWin(col, row, Board::Players::yellow)) {
+	else if (board.CheckWin(col, row, Board::Players::yellow)) {
 		win_type = 2;
 		return true;
 	}
 
 	// Check to see if the last move caused a draw
-	else if (grid.CheckForDraw()) {
+	else if (board.CheckForDraw()) {
 		win_type = 3;
 		return true;
 	}
@@ -345,7 +328,7 @@ bool Play_state_One::CheckForGameEnd(int col, int row) {
 void Play_state_One::AnimateDroppingPiece() {
 
 	// Hidden position is -width for X and -height for Y for init image. 
-	// play_a_move() set X axis value of red or yellow piece, check if animation needs to start
+	// Play() set X axis value of red or yellow piece, check if animation needs to start
 
 	// Drop animation - advance red piece on Y axis
 	if (red_piece_x != -Setting::grid_sprite_width) {
@@ -353,7 +336,7 @@ void Play_state_One::AnimateDroppingPiece() {
 		Resource_manager::GetImage("red_piece")->SetPosition(red_piece_x, red_piece_y);
 	}
 
-	// Check if we need to stop red piece drop animation by checking current Y axis value against red_piece_to_y set by play_a_move()
+	// Check if we need to stop red animation by checking current Y axis value against red_piece_to_y set by Play()
 	if (red_piece_y == red_piece_to_y) {
 		red_piece_x = -Setting::grid_sprite_width;
 		red_piece_y = -Setting::grid_sprite_height;
@@ -367,7 +350,7 @@ void Play_state_One::AnimateDroppingPiece() {
 		Resource_manager::GetImage("yellow_piece")->SetPosition(yellow_piece_x, yellow_piece_y);
 	}
 
-	// Check if we need to stop yellow piece drop animation by checking current Y axis value against yellow_piece_to_y set by play_a_move()
+	// Check if we need to stop yellow animation by checking current Y axis value against yellow_piece_to_y set by Play()
 	if (yellow_piece_y == yellow_piece_to_y) {
 		yellow_piece_x = -Setting::grid_sprite_width;
 		yellow_piece_y = -Setting::grid_sprite_height;

@@ -24,9 +24,6 @@ struct Setting
 	/// Set a background colour for the renderer
 	static const int background_color[];
 
-	/// Set to false for peaceful development
-	static const bool play_sounds = true;
-
 	/// Changing the scale factor adjusts the size of images and window
 	static const int scale_factor = 8;
 

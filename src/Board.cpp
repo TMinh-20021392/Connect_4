@@ -15,15 +15,14 @@ void Board::Init()
 }
 
 /**
- * The board is of repeated blank cell. The pieces are in a sprite that has image for a blank, a cell with red and a cell with yellow piece.
+ * The board is of repeated blank cell. The pieces are in a sprite that has image for a blank, cell with red and cell with yellow piece.
  */
 void Board::Render()
 {
-	// Iterate over columns and rows and render play sprites and board overlay
 	for (int col = 0; col < Setting::grid_columns; col++) {
 		for (int row = 0; row < Setting::grid_rows; row++) {
 
-			// Calculate coords for the board layout
+			// Calculate coords for board layout
 			int x = col * Setting::grid_sprite_width;
 			int y = row  * Setting::grid_sprite_height;
 
@@ -45,8 +44,6 @@ void Board::Clear()
 {
 	for (int col = 0; col < Setting::grid_columns; col++) {
 		for (int row = 0; row < Setting::grid_rows; row++) {
-
-			// Set the cell sprite to sprite_blank
 			cells[col][row].current_sprite = Sprites::blank;
 			cells[col][row].played_by = Players::nobody;
 		}
@@ -88,21 +85,19 @@ bool Board::CheckWin(int col, int row, Players player)
 
 bool Board::CheckForRowWin(int row, Players player)
 {
-	int consecutive_matches = 0;
-
-	// Iterate over columns in a specified row.
+	int count = 0;
 	for (int i = 0; i < Setting::grid_columns; i++) {
 
 		// Count consecutive matches
 		if (cells[i][row].played_by == player) {
-			consecutive_matches++;
+			count++;
 		}
 		else {
-			consecutive_matches = 0;
+			count = 0;
 		}
 
 		// If there are enough consecutive matches return true for a win
-		if (consecutive_matches == Setting::win_count) {
+		if (count == Setting::win_count) {
 			return true;
 		}
 	}
@@ -112,21 +107,15 @@ bool Board::CheckForRowWin(int row, Players player)
 
 bool Board::CheckForColumnWin(int col, Players player)
 {
-	int consecutive_matches = 0;
-
-	// Iterate over rows in a specified column.
+	int count = 0;
 	for (int i = 0; i < Setting::grid_rows; i++) {
-
-		// Count consecutive matches
 		if (cells[col][i].played_by == player) {
-			consecutive_matches++;
+			count++;
 		}
 		else {
-			consecutive_matches = 0;
+			count = 0;
 		}
-
-		// If there are enough consecutive matches return true for a win
-		if (consecutive_matches == Setting::win_count) {
+		if (count == Setting::win_count) {
 			return true;
 		}
 	}
@@ -136,8 +125,8 @@ bool Board::CheckForColumnWin(int col, Players player)
 
 bool Board::CheckForForwardsDiagonalWin(int col, int row, Players player)
 {
-	int consecutive_matches = 0;
-	// Setting::win_count * 2 to check both sides of this move
+	int count = 0;
+	// win_count * 2 to check both sides of this move
 	for (int i = 0; i < Setting::win_count * 2; i++) {
 		// Count from the bottom of the forward diagonal to the top. [/]
 		int check_col = col + i - Setting::win_count;
@@ -145,17 +134,13 @@ bool Board::CheckForForwardsDiagonalWin(int col, int row, Players player)
 
 		// Only check when coords are valid
 		if ((check_col >= 0 && check_col < Setting::grid_columns) && (check_row >= 0 && check_row < Setting::grid_rows)) {
-
-			// Count consecutive matches
 			if (cells[check_col][check_row].played_by == player) {
-				consecutive_matches++;
+				count++;
 			}
 			else {
-				consecutive_matches = 0;
+				count = 0;
 			}
-
-			// If there are enough consecutive matches return true for a win
-			if (consecutive_matches == Setting::win_count) {
+			if (count == Setting::win_count) {
 				return true;
 			}
 		}
@@ -166,8 +151,8 @@ bool Board::CheckForForwardsDiagonalWin(int col, int row, Players player)
 
 bool Board::CheckForBackwardsDiagonalWin(int col, int row, Players player)
 {
-	int consecutive_matches = 0;
-	// Setting::win_count * 2 to check both sides of this move
+	int count = 0;
+	// win_count * 2 to check both sides of this move
 	for (int i = 0; i < Setting::win_count * 2; i++) {
 
 		// Count from the top of the backwards diagonal to the bottom. [\]
@@ -176,17 +161,13 @@ bool Board::CheckForBackwardsDiagonalWin(int col, int row, Players player)
 
 		// Only check when coords are valid
 		if ((check_col >= 0 && check_col < Setting::grid_columns) && (check_row >= 0 && check_row < Setting::grid_rows)) {
-
-			// Count consecutive matches
 			if (cells[check_col][check_row].played_by == player) {
-				consecutive_matches++;
+				count++;
 			}
 			else {
-				consecutive_matches = 0;
+				count = 0;
 			}
-
-			// If there are enough consecutive matches return true for a win
-			if (consecutive_matches == Setting::win_count) {
+			if (count == Setting::win_count) {
 				return true;
 			}
 		}
@@ -197,7 +178,7 @@ bool Board::CheckForBackwardsDiagonalWin(int col, int row, Players player)
 
 int Board::GetBottommostAvailableRowInColumn(int col)
 {
-	// Scan from bottom to top of given column for available row
+	// Scan for available row of given column
 	for (int i = Setting::grid_rows - 1; i >= 0; i--) {
 		if (cells[col][i].played_by == Players::nobody) {
 			return i;
@@ -223,10 +204,10 @@ bool Board::DropPiece(int col, Players player)
 {
 	// Check if column index valid
 	if (col >= 0 && col < Setting::grid_columns) {
-		// Find the bottommost available row in the specified column
+		// Get bottommost available row in given column
 		int row = GetBottommostAvailableRowInColumn(col);
 		if (row != -1) {
-			// Set the player who owns the cell in the specified column and row
+			// Set player owning the cell
 			cells[col][row].played_by = player;
 			// True if a piece drops successfully
 			return true;

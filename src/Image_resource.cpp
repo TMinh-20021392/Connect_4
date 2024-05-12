@@ -23,10 +23,9 @@ Image_resource::~Image_resource()
 
 bool Image_resource::LoadFromFile(const char* file)
 {
-	// As only BMPs are supported, ".bmp" is omitted from the filename and appended here
 	std::string path = Setting::image_path + file + ".bmp";
 
-	// Load image at specified path
+	// Load image at given path
 	SDL_Surface* surface = SDL_LoadBMP(path.c_str());
 	if (surface == nullptr) {
 		std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
@@ -45,11 +44,11 @@ bool Image_resource::LoadFromFile(const char* file)
 		return false;
 	}
 
-	// Grab the actual (not-scaled) width and height 
+	// Grab the non-scaled width and height 
 	width = surface->w;
 	height = surface->h;
 
-	// Delete the surface
+	// Delete surface
 	SDL_FreeSurface(surface);
 
 	return true;
@@ -57,25 +56,23 @@ bool Image_resource::LoadFromFile(const char* file)
 
 void Image_resource::SetPosition(int x, int y) {
 
-	// Update the X and Y positions ready for render()
+	// Update X and Y positions for render
 	position_x = x;
 	position_y = y;
 }
 
 void Image_resource::SetPositionWithSize(int x, int y, int w, int h) {
 
-	// Update the X and Y positions ready for render()
+	// Update the X and Y positions for render
 	position_x = x;
 	position_y = y;
 
-	// Update the width and height
+	// Update width and height
 	width = w;
 	height = h;
 }
 
 void Image_resource::SetPositionCenter() {
-
-	// Centre is half the window width of height with half the image width or height subtracted
 	position_x = (Setting::window_width / 2) - (width / 2);
 	position_y = (Setting::window_height / 2) - (height / 2);
 }
@@ -105,12 +102,10 @@ void Image_resource::Render(SDL_Rect* clip_rect)
 		height * Setting::scale_factor
 	};
 
-	// If using a sprite dest_rect needs to use the width and height of a single sprite not the entire sprite sheet
+	// If using a sprite dest_rect needs to use the width and height of single sprite not the entire sprite sheet
 	if (clip_rect != nullptr) {
 		dest_rect.w = clip_rect->w * Setting::scale_factor;
 		dest_rect.h = clip_rect->h * Setting::scale_factor;
 	}
-
-	// Copy the texture to the renderer with a clipping source rectangle if supplied but with no rotating or flipping
 	SDL_RenderCopyEx(Game::GetRenderer(), texture, clip_rect, &dest_rect, 0.0, nullptr, SDL_FLIP_NONE);
 }

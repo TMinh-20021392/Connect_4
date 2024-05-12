@@ -6,7 +6,6 @@
 #include "State_manager.h"
 #include "Resource_manager.h"
 
-// Initialise static data-members 
 SDL_Window* Game::window = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 
@@ -18,7 +17,6 @@ Game::~Game()
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
-	// Quit SDL subsystems
 	Mix_Quit();
 	SDL_Quit();
 }
@@ -35,7 +33,7 @@ SDL_Renderer* Game::GetRenderer()
 
 bool Game::Init(const char* title, int window_width, int window_height)
 {
-	// Initialise SDL
+	// Init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 		return false;
@@ -48,7 +46,7 @@ bool Game::Init(const char* title, int window_width, int window_height)
 		return false;
 	}
 
-	// Set titlebar icon
+	// Set icon
 	if (Setting::icon_path) {
 		SDL_Surface* icon = SDL_LoadBMP(Setting::icon_path);
 		if (icon == nullptr) {
@@ -70,7 +68,7 @@ bool Game::Init(const char* title, int window_width, int window_height)
 	// Set background colour
 	SDL_SetRenderDrawColor(renderer, Setting::background_color[0], Setting::background_color[1], Setting::background_color[2], Setting::background_color[3]);
 
-	// Initialise SDL_mixer
+	// Init SDL_mixer
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
 		std::cout << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
 		return false;
@@ -83,28 +81,28 @@ void Game::Run()
 {
 	while (running)
 	{
-		// Loop until all pending events have left the queue 
+		// Loop until events queue empty
 		while (SDL_PollEvent(&event)) {
 
-			// Let the state handle events
+			// Handle events by state
 			State_manager::GetState()->HandleEvent(event);
 
-			// Handle window quit event
+			// Quitting
 			if (event.type == SDL_QUIT) {
 				Game::Stop();
 			}
 		}
 
-		// Update data of the state
+		// Update data for renderer
 		State_manager::GetState()->Update();
 
 		// Clear screen
 		SDL_RenderClear(renderer);
 
-		// Render the state
+		// Update renderer
 		State_manager::GetState()->Render();
 
-		// Update screen taking into account SDL v-sync. This stops the game loop from running too fast
+		// Update screen
 		SDL_RenderPresent(renderer);
 
 	}
