@@ -10,16 +10,12 @@ public:
 	~Game();
 
 	/**
- 	 * Get instance of SDL_Window 
-	 *
-	 * @return Pointer to instance
+ 	 * Get instance of SDL_Window
 	 */
 	static SDL_Window* GetWindow();
 
 	/**
-	 * Gets instance of an SDL_Renderer
-	 *
-	 * @return Pointer to instance
+	 * Get instance of SDL_Renderer
 	 */
 	static SDL_Renderer* GetRenderer();
 
@@ -32,12 +28,12 @@ public:
 	bool Init(const char* title, int window_width, int window_height);
 
 	/**
-	 * Runs the game loop until Stop() is called
+	 * Game loop until Stop() is called
 	 */
 	void Run();
 
 	/**
-	 * Stops the game loop started by Run() and cleans up SDL variables
+	 * Stops game loop
 	 */
 	void Stop();
 
