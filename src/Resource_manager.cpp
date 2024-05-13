@@ -15,7 +15,7 @@ Image_resource* Resource_manager::GetImage(const char* file) {
 		}
 	}
 
-	std::cout << "Could not find resource: " << file << std::endl;
+	std::cout << "Could not find " << file << std::endl;
 	return nullptr;
 }
 
@@ -28,7 +28,7 @@ Sound_resource* Resource_manager::GetSound(const char* file) {
 		}
 	}
 
-	std::cout << "Could not file resource: " << file << std::endl;
+	std::cout << "Could not find " << file << std::endl;
 	return nullptr;
 }
 
