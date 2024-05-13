@@ -45,7 +45,7 @@ void Menu_state::HandleEvent(SDL_Event& event)
 
 void Menu_state::Update()
 {
-    // Add any necessary updates here
+    
 }
 
 void Menu_state::Render()
@@ -56,13 +56,12 @@ void Menu_state::Render()
     Resource_manager::GetImage("TWOPLAYERButton")->Render();
 }
 
-bool Menu_state::WithinBox(int x, int y, int box_position_x, int box_position_y, int box_width, int box_height)
+bool Menu_state::WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h)
 {
-    // Check four conditions to determine if X and Y are inside the box
-    if (x >= box_position_x // Not too far left
-        && x < box_position_x + box_width // Not too far right
-        && y >= box_position_y // Not too far up
-        && y < box_position_y + box_height) // Not too far down
+    if (x >= box_x // Not too far left
+        && x < box_x + box_w // Not too far right
+        && y >= box_y // Not too far up
+        && y < box_y + box_h) // Not too far down
     {
         return true;
     }

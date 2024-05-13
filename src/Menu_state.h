@@ -11,5 +11,5 @@ public:
     void Render() override;
 
 private:
-    bool WithinBox(int x, int y, int box_position_x, int box_position_y, int box_width, int box_height);
+    bool WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h);
 };
