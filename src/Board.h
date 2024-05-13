@@ -60,7 +60,7 @@ public:
     int GetBottommostAvailableRowInColumn(int col);
 
     /**
-     * Get the piece at a specific column and row.
+     * Get piece at a specific column and row.
      */
     Players GetPiece(int col, int row);
 

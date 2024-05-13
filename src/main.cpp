@@ -5,7 +5,6 @@
 #include "State_manager.h"
 #include "Menu_state.h"
 
-// App entry point
 int main(int argc, char* args[])
 {
 	Game game;
