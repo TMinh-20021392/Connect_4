@@ -40,6 +40,14 @@ void Play_state_One::Init()
 
 	// Must divide 16 and <=16, else glitch
 	drop_speed = 16;
+
+	// Prevent mouse click event from Menu interfere with play
+	firsttime = true;
+
+	ai_turn = true;
+	if (ai_turn) {
+		AdvanceGame();
+	}
 }
 
 void Play_state_One::Clean()
@@ -63,6 +71,7 @@ void Play_state_One::Clean()
 void Play_state_One::HandleEvent(SDL_Event& event)
 {
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		firsttime = false;
 		AdvanceGame();
 	}
 }
@@ -106,8 +115,18 @@ void Play_state_One::AdvanceGame() {
 		return;
 	}
 
-	// If no winner
-	if (!win_type) {
+	// AI player's turn
+	if (!win_type && sprite_to_play == Board::Sprites::red) {
+		int ai_col = GetAIMove();
+		int ai_row = board.GetBottommostAvailableRowInColumn(ai_col);
+
+		if (!Play(ai_col, ai_row) || CheckForGameEnd(ai_col, ai_row)) {
+			return;
+		}
+	}
+
+	// Human player's turn
+	if (!win_type && sprite_to_play == Board::Sprites::yellow && !firsttime) {
 		// Get mouse coords and normalize to column
 		int mouse_x;
 		int mouse_y;
@@ -123,16 +142,6 @@ void Play_state_One::AdvanceGame() {
 		}
 	}
 
-	// AI player's turn
-	if (!win_type) {
-		int ai_col = GetAIMove();
-		int ai_row = board.GetBottommostAvailableRowInColumn(ai_col);
-
-		if (!Play(ai_col, ai_row) || CheckForGameEnd(ai_col, ai_row)) {
-			return;
-		}
-	}
-
 	// Reset the game if there's a winner or draw
 	if (win_type) {
 		win_type = 0;
@@ -143,6 +152,43 @@ void Play_state_One::AdvanceGame() {
 }
 
 int Play_state_One::GetAIMove() {
+	//std::vector<int> available_columns;
+
+	//// Find all available columns
+	//for (int col = 0; col < Setting::grid_columns; ++col) {
+	//	if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
+	//		available_columns.push_back(col);
+	//	}
+	//}
+
+	//// If there are available columns, find the best move using Minimax
+	//if (!available_columns.empty()) {
+	//	int bestScore = INT_MIN;
+	//	int bestMove = -1;
+
+	//	for (int col : available_columns) {
+	//		// Simulate a move for the AI player
+	//		int row = board.GetBottommostAvailableRowInColumn(col);
+	//		board.cells[col][row].played_by = Board::Players::yellow;
+
+	//		// Calculate the score for this move using Minimax
+	//		int score = Minimax(5, false);
+
+	//		// Undo the simulated move
+	//		board.cells[col][row].played_by = Board::Players::nobody;
+
+	//		// Update the best move if this move has a higher score
+	//		if (score > bestScore) {
+	//			bestScore = score;
+	//			bestMove = col;
+	//		}
+	//	}
+
+	//	return bestMove;
+	//}
+
+	//// If no available columns, return -1
+	//return -1;
 	std::vector<int> available_columns;
 
 	// Find all available columns
@@ -152,30 +198,12 @@ int Play_state_One::GetAIMove() {
 		}
 	}
 
-	// If there are available columns, find the best move using Minimax
+	// If there are available columns, choose a random move
 	if (!available_columns.empty()) {
-		int bestScore = INT_MIN;
-		int bestMove = -1;
-
-		for (int col : available_columns) {
-			// Simulate a move for the AI player
-			int row = board.GetBottommostAvailableRowInColumn(col);
-			board.cells[col][row].played_by = Board::Players::yellow;
-
-			// Calculate the score for this move using Minimax
-			int score = Minimax(5, false);
-
-			// Undo the simulated move
-			board.cells[col][row].played_by = Board::Players::nobody;
-
-			// Update the best move if this move has a higher score
-			if (score > bestScore) {
-				bestScore = score;
-				bestMove = col;
-			}
-		}
-
-		return bestMove;
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dis(0, available_columns.size() - 1);
+		return available_columns[dis(gen)];
 	}
 
 	// If no available columns, return -1

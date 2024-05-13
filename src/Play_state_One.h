@@ -73,6 +73,9 @@ private:
 
 	/// Max depth AI
 	int max_depth = 3;
+
+	bool ai_turn = true;
+	bool firsttime = true;
 	/**
 	 * Animate the dropping piece
 	 */
