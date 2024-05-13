@@ -11,7 +11,7 @@ public:
 	/**
 	 * Set the current state to run
 	 *
-	 * The current state will be called from the Game::Run() loop
+	 * Called from the Game::Run() loop
 	 */
 	static void SetState(State* state);
 

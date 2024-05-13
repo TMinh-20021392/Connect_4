@@ -62,8 +62,8 @@ private:
 	int yellow_piece_to_y;
 
 	/// Store the column and row of last move
-	int previous_play_col;
-	int previous_play_row;
+	int previous_play_col = 0;
+	int previous_play_row = 0;
 
 	/// Store the previous sprite (red or yellow) of the last move
 	Board::Sprites previous_play_sprite;

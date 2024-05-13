@@ -24,11 +24,11 @@ void Play_state_Two::Init()
 
 	board.Init();
 
-	// Get the current position of the red piece for the drop animation
+	// Get current position of the red piece
 	red_piece_x = Resource_manager::LoadImage("red_piece")->GetPositionX();
 	red_piece_y = Resource_manager::LoadImage("red_piece")->GetPositionY();
 
-	// Get the current position of the yellow piece for the drop animation
+	// Get current position of the yellow piece
 	yellow_piece_x = Resource_manager::LoadImage("yellow_piece")->GetPositionX();
 	yellow_piece_y = Resource_manager::LoadImage("yellow_piece")->GetPositionY();
 
@@ -37,7 +37,7 @@ void Play_state_Two::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide nicely into 16 or it wont fall on the right parts of the Y axis during animations causing glitches
+	// Must divide 16 or it wont fall rightly on Y axis during animations causing glitches
 	drop_speed = 8;
 }
 
@@ -73,7 +73,7 @@ void Play_state_Two::Update()
 
 void Play_state_Two::Render()
 {
-	// Render yellow and red pieces now so that they will appear under board overlay that is rendered next
+	// Render yellow and red pieces now so they appear under board overlay that is rendered next
 	Resource_manager::GetImage("red_piece")->Render();
 	Resource_manager::GetImage("yellow_piece")->Render();
 
@@ -110,7 +110,7 @@ void Play_state_Two::AdvanceGame() {
 	// If no winner
 	if (!win_type) {
 
-		// Get mouse coordinates and normalize to column
+		// Get mouse coords and normalize to column
 		int mouse_x;
 		int mouse_y;
 		Game::GetMousePosition(&mouse_x, &mouse_y);
@@ -128,7 +128,7 @@ void Play_state_Two::AdvanceGame() {
 
 	}
 
-	// Else if there was a win or draw, reset the winner, make next sprite red and clear the board
+	// Reset the game if there's a winner or draw
 	else {
 		win_type = 0;
 		sprite_to_play = Board::Sprites::red;

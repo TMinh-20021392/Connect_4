@@ -58,15 +58,12 @@ bool Game::Init(const char* title, int window_width, int window_height)
 		SDL_FreeSurface(icon);
 	}
 
-	// Create renderer for window
+	// Create renderer
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == nullptr) {
 		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-
-	// Set background colour
-	SDL_SetRenderDrawColor(renderer, Setting::background_color[0], Setting::background_color[1], Setting::background_color[2], Setting::background_color[3]);
 
 	// Init SDL_mixer
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {

@@ -21,9 +21,6 @@ struct Setting
 	/// Set first element to -1 to disable colour keying, otherwise set to a colour such as { 0, 0xFF, 0xFF }
 	static const int color_key[];
 
-	/// Set a background colour for the renderer
-	static const int background_color[];
-
 	/// Changing the scale factor adjusts the size of images and window
 	static const int scale_factor = 8;
 
