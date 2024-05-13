@@ -11,10 +11,10 @@ This project is a C++ implementation of the classic game Connect Four. Credited 
 
 ## How to Play
 
-Clone the repository: `git clone https://github.com/TMinh-20021392/Connect_4.git`
-Open the project in Visual Studio 2022.
-Build the project.
-Run the game from the IDE.
+- Clone the repository: `git clone https://github.com/TMinh-20021392/Connect_4.git`
+- Open the project in Visual Studio 2022.
+- Build the project.
+- Run the game from the IDE.
 
 ## Gameplay
 
@@ -31,8 +31,8 @@ The menu provides options to start a new game, quit the program, or select the m
 In the 1-player mode, you will play against an AI opponent. The AI is programmed to make strategic moves based on the current game state.
 
 ## To Do
-Implement alternation of order to play in 1-player mode.
-Add "Play again" and "Menu" buttons for better user experience.
+- Implement alternation of order to play in 1-player mode.
+- Add "Play again" and "Menu" buttons for better user experience.
 
 ## Credits
 
