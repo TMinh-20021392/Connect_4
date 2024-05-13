@@ -65,7 +65,7 @@ private:
 	int previous_play_col = 0;
 	int previous_play_row = 0;
 
-	/// Store the previous sprite (red or yellow) of the last move
+	/// Store the previous sprite (red or yellow) of last move
 	Board::Sprites previous_play_sprite;
 
 	/// Animation speed for dropping piece

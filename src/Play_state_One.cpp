@@ -38,8 +38,8 @@ void Play_state_One::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide 16 or it wont fall rightly on Y axis during animations causing glitches
-	drop_speed = 8;
+	// Must divide 16 and <=16, else glitch
+	drop_speed = 16;
 }
 
 void Play_state_One::Clean()

@@ -37,8 +37,8 @@ void Play_state_Two::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide 16 or it wont fall rightly on Y axis during animations causing glitches
-	drop_speed = 8;
+	// Must divide 16 and <=16, else glitch
+	drop_speed = 16;
 }
 
 void Play_state_Two::Clean()
@@ -118,12 +118,9 @@ void Play_state_Two::AdvanceGame() {
 		// Get the row that the play can be dropped to
 		int row = board.GetBottommostAvailableRowInColumn(col);
 
-		// Play a move
-		if (Play(col, row)) {
-			CheckForGameEnd(col, row);
-		}
-		else {
+		if (row == -1 || (!Play(col, row) || CheckForGameEnd(col, row))) {
 			Resource_manager::GetSound("invalid_move")->PlaySound();
+			return; // Exit if the column full
 		}
 
 	}
