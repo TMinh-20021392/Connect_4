@@ -6,6 +6,12 @@
 #include "Menu_state.h"
 #include <random>
 
+// Default constructor
+Play_state_One::Play_state_One() : sprite_to_play(Board::Sprites::red), win_type(0), ai_first(true), firsttime(true), win_announced(false) {}
+
+// New constructor with ai_first parameter
+Play_state_One::Play_state_One(bool ai_first) : sprite_to_play(Board::Sprites::red), win_type(0), drop_speed(8), ai_first(ai_first), firsttime(true), win_announced(false) {}
+
 void Play_state_One::Init()
 {
 	Resource_manager::LoadImage("cell_sprite");
@@ -17,6 +23,9 @@ void Play_state_One::Init()
 	Resource_manager::LoadImage("red_wins")->SetPositionCenter();
 	Resource_manager::LoadImage("yellow_wins")->SetPositionCenter();
 	Resource_manager::LoadImage("draw")->SetPositionCenter();
+
+	Resource_manager::LoadImage("replay")->SetPositionWithSize(61, 64, 20, 20);
+	Resource_manager::LoadImage("menu")->SetPositionWithSize(31, 64, 20, 20);
 
 	Resource_manager::LoadSound("valid_move");
 	Resource_manager::LoadSound("invalid_move");
@@ -44,8 +53,7 @@ void Play_state_One::Init()
 	// Prevent mouse click event from Menu interfere with play
 	firsttime = true;
 
-	ai_turn = true;
-	if (ai_turn) {
+	if (ai_first) {
 		AdvanceGame();
 		firsttime = false;
 	}
@@ -73,13 +81,21 @@ void Play_state_One::HandleEvent(SDL_Event& event)
 {
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (win_announced) {
+			int mouse_x;
+			int mouse_y;
+			Game::GetMousePosition(&mouse_x, &mouse_y);
 			win_type = 0;
 			sprite_to_play = Board::Sprites::red;
 			board.Clear();
 			win_announced = false;
-			State_manager::SetState(new Menu_state());
+			if (WithinBox(mouse_x, mouse_y, 31, 64, 20, 20)) {
+				State_manager::SetState(new Menu_state());
+			}
+			else if (WithinBox(mouse_x, mouse_y, 61, 64, 20, 20)) {
+				State_manager::SetState(new Play_state_One(!ai_first));
+			}
 		}
-		else if (!IsDropAnimationPlaying() && sprite_to_play == Board::Sprites::yellow) {
+		else if (!IsDropAnimationPlaying() && IsHumanTurn()) {
 			AdvanceGame();
 		}
 	}
@@ -88,11 +104,6 @@ void Play_state_One::HandleEvent(SDL_Event& event)
 void Play_state_One::Update()
 {
 	AnimateDroppingPiece();
-	if (!IsDropAnimationPlaying() && sprite_to_play == Board::Sprites::red && !ai_turn) {
-		ai_turn = true;
-		AdvanceGame();
-	}
-	ai_turn = false;
 }
 
 void Play_state_One::Render()
@@ -107,22 +118,28 @@ void Play_state_One::Render()
 	if (IsDropAnimationPlaying()) {
 		return;
 	}
-
+	if (win_type != 0) {
+		win_announced = true;
+	}
 	// Depending on win or draw conditions, display a win or draw message overlay image
 	if (win_type == 1) {
 		Resource_manager::GetImage("red_wins")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
-		win_announced = true;
+
 	}
 	else if (win_type == 2) {
 		Resource_manager::GetImage("yellow_wins")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
-		win_announced = true;
 	}
 	else if (win_type == 3) {
 		Resource_manager::GetImage("draw")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("draw")->PlaySoundOnce();
-		win_announced = true;
 	}
 }
 
@@ -131,18 +148,8 @@ void Play_state_One::AdvanceGame() {
 	if (IsDropAnimationPlaying()) {
 		return;
 	}
-
-	// AI player's turn
-	if (!win_type && sprite_to_play == Board::Sprites::red) {
-		int ai_col = GetAIMove();
-		int ai_row = board.GetBottommostAvailableRowInColumn(ai_col);
-
-		if (!Play(ai_col, ai_row) || CheckForGameEnd(ai_col, ai_row)) {
-			return;
-		}
-	}
 	// Human player's turn
-	else if (!win_type && sprite_to_play == Board::Sprites::yellow && !firsttime) {
+	if (!win_type && IsHumanTurn()) {
 		// Get mouse coords and normalize to column
 		int mouse_x;
 		int mouse_y;
@@ -155,6 +162,15 @@ void Play_state_One::AdvanceGame() {
 		if (row == -1 || (!Play(col, row) || CheckForGameEnd(col, row))) {
 			Resource_manager::GetSound("invalid_move")->PlaySound();
 			return; // Exit if the column full
+		}
+	}
+	// AI player's turn
+	if (!win_type && !IsHumanTurn()) {
+		int ai_col = GetAIMove();
+		int ai_row = board.GetBottommostAvailableRowInColumn(ai_col);
+
+		if (!Play(ai_col, ai_row) || CheckForGameEnd(ai_col, ai_row)) {
+			return;
 		}
 	}
 }
@@ -177,7 +193,7 @@ int Play_state_One::GetAIMove() {
 	//	for (int col : available_columns) {
 	//		// Simulate a move for the AI player
 	//		int row = board.GetBottommostAvailableRowInColumn(col);
-	//		board.cells[col][row].played_by = Board::Players::yellow;
+	//		board.cells[col][row].played_by = ai_first ? Board::Players::red : Board::Players::yellow;
 
 	//		// Calculate the score for this move using Minimax
 	//		int score = Minimax(5, false);
@@ -402,4 +418,21 @@ bool Play_state_One::IsDropAnimationPlaying() {
 		return true;
 	}
 	return false;
+}
+
+bool Play_state_One::WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h)
+{
+	if (x >= box_x // Not too far left
+		&& x < box_x + box_w // Not too far right
+		&& y >= box_y // Not too far up
+		&& y < box_y + box_h) // Not too far down
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Play_state_One::IsHumanTurn() {
+	return ((!ai_first && sprite_to_play == Board::Sprites::red) || (ai_first && sprite_to_play == Board::Sprites::yellow));
 }

@@ -74,4 +74,6 @@ private:
 	 * @return true if the animation is still playing
 	 */
 	bool IsDropAnimationPlaying();
+
+	bool WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h);
 };

@@ -9,6 +9,8 @@
 class Play_state_One : public State
 {
 public:
+	Play_state_One();
+	explicit Play_state_One(bool ai_first);
 	void Init() override;
 	void HandleEvent(SDL_Event& event) override;
 	void Update() override;
@@ -74,7 +76,7 @@ private:
 	/// Max depth AI
 	int max_depth = 3;
 
-	bool ai_turn = true;
+	bool ai_first = true;
 	bool firsttime = true;
 	bool win_announced = false;
 	/**
@@ -88,4 +90,8 @@ private:
 	 * @return true if the animation is still playing
 	 */
 	bool IsDropAnimationPlaying();
+
+	bool WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h);
+
+	bool IsHumanTurn();
 };

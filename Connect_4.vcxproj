@@ -50,9 +50,11 @@
     <Image Include="images\draw.bmp" />
     <Image Include="images\grid_overlay.bmp" />
     <Image Include="images\icon16.bmp" />
+    <Image Include="images\menu.bmp" />
     <Image Include="images\ONEPLAYERButton.bmp" />
     <Image Include="images\red_piece.bmp" />
     <Image Include="images\red_wins.bmp" />
+    <Image Include="images\replay.bmp" />
     <Image Include="images\Title.bmp" />
     <Image Include="images\TWOPLAYERButton.bmp" />
     <Image Include="images\yellow_piece.bmp" />

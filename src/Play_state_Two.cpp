@@ -17,6 +17,9 @@ void Play_state_Two::Init()
 	Resource_manager::LoadImage("yellow_wins")->SetPositionCenter();
 	Resource_manager::LoadImage("draw")->SetPositionCenter();
 
+	Resource_manager::LoadImage("replay")->SetPositionWithSize(61, 64, 20, 20);
+	Resource_manager::LoadImage("menu")->SetPositionWithSize(31, 64, 20, 20);
+
 	Resource_manager::LoadSound("valid_move");
 	Resource_manager::LoadSound("invalid_move");
 	Resource_manager::LoadSound("win");
@@ -87,15 +90,21 @@ void Play_state_Two::Render()
 	// Depending on win or draw conditions, display a win or draw message overlay image
 	if (win_type == 1) {
 		Resource_manager::GetImage("red_wins")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
 
 	}
 	else if (win_type == 2) {
 		Resource_manager::GetImage("yellow_wins")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
 	}
 	else if (win_type == 3) {
 		Resource_manager::GetImage("draw")->Render();
+		Resource_manager::GetImage("menu")->Render();
+		Resource_manager::GetImage("replay")->Render();
 		Resource_manager::GetSound("draw")->PlaySoundOnce();
 	}
 }
@@ -127,10 +136,18 @@ void Play_state_Two::AdvanceGame() {
 
 	// Reset the game if there's a winner or draw
 	else {
+		int mouse_x;
+		int mouse_y;
+		Game::GetMousePosition(&mouse_x, &mouse_y);
 		win_type = 0;
 		sprite_to_play = Board::Sprites::red;
 		board.Clear();
-		State_manager::SetState(new Menu_state());
+		if (WithinBox(mouse_x, mouse_y, 31, 64, 20, 20)) {
+			State_manager::SetState(new Menu_state());
+		}
+		else if (WithinBox(mouse_x, mouse_y, 61, 64, 20, 20)) {
+			State_manager::SetState(new Play_state_Two());
+		}
 	}
 }
 
@@ -241,5 +258,18 @@ bool Play_state_Two::IsDropAnimationPlaying() {
 		|| yellow_piece_y != -Setting::grid_sprite_height) {
 		return true;
 	}
+	return false;
+}
+
+bool Play_state_Two::WithinBox(int x, int y, int box_x, int box_y, int box_w, int box_h)
+{
+	if (x >= box_x // Not too far left
+		&& x < box_x + box_w // Not too far right
+		&& y >= box_y // Not too far up
+		&& y < box_y + box_h) // Not too far down
+	{
+		return true;
+	}
+
 	return false;
 }

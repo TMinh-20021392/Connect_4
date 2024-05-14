@@ -5,6 +5,7 @@
 #include "Resource_manager.h"
 #include "Play_state_Two.h"
 #include "Play_state_One.h"
+
 void Menu_state::Init()
 {
     const int ButtonWidth = 40;
@@ -35,7 +36,7 @@ void Menu_state::HandleEvent(SDL_Event& event)
 
         // Check if click falls within box coords
         if (WithinBox(mouse_x, mouse_y, 36, 48, 40, 10)) {
-            State_manager::SetState(new Play_state_One());
+            State_manager::SetState(new Play_state_One(false));
         }
         else if (WithinBox(mouse_x, mouse_y, 36, 63, 40, 10)) {
             State_manager::SetState(new Play_state_Two());
@@ -45,7 +46,7 @@ void Menu_state::HandleEvent(SDL_Event& event)
 
 void Menu_state::Update()
 {
-    
+    // Add animation in future
 }
 
 void Menu_state::Render()

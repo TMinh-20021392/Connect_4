@@ -121,5 +121,11 @@
     <Image Include="images\draw.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="images\replay.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="images\menu.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
