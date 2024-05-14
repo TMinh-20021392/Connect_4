@@ -38,7 +38,7 @@ void Play_state_Two::Init()
 	previous_play_sprite = Board::Sprites::red;
 
 	// Must divide 16 and <=16, else glitch
-	drop_speed = 16;
+	drop_speed = 8;
 }
 
 void Play_state_Two::Clean()

@@ -76,6 +76,7 @@ private:
 
 	bool ai_turn = true;
 	bool firsttime = true;
+	bool win_announced = false;
 	/**
 	 * Animate the dropping piece
 	 */

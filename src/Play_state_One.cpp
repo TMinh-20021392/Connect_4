@@ -39,7 +39,7 @@ void Play_state_One::Init()
 	previous_play_sprite = Board::Sprites::red;
 
 	// Must divide 16 and <=16, else glitch
-	drop_speed = 16;
+	drop_speed = 8;
 
 	// Prevent mouse click event from Menu interfere with play
 	firsttime = true;
@@ -47,6 +47,7 @@ void Play_state_One::Init()
 	ai_turn = true;
 	if (ai_turn) {
 		AdvanceGame();
+		firsttime = false;
 	}
 }
 
@@ -71,14 +72,27 @@ void Play_state_One::Clean()
 void Play_state_One::HandleEvent(SDL_Event& event)
 {
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
-		firsttime = false;
-		AdvanceGame();
+		if (win_announced) {
+			win_type = 0;
+			sprite_to_play = Board::Sprites::red;
+			board.Clear();
+			win_announced = false;
+			State_manager::SetState(new Menu_state());
+		}
+		else if (!IsDropAnimationPlaying() && sprite_to_play == Board::Sprites::yellow) {
+			AdvanceGame();
+		}
 	}
 }
 
 void Play_state_One::Update()
 {
 	AnimateDroppingPiece();
+	if (!IsDropAnimationPlaying() && sprite_to_play == Board::Sprites::red && !ai_turn) {
+		ai_turn = true;
+		AdvanceGame();
+	}
+	ai_turn = false;
 }
 
 void Play_state_One::Render()
@@ -98,14 +112,17 @@ void Play_state_One::Render()
 	if (win_type == 1) {
 		Resource_manager::GetImage("red_wins")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
+		win_announced = true;
 	}
 	else if (win_type == 2) {
 		Resource_manager::GetImage("yellow_wins")->Render();
 		Resource_manager::GetSound("win")->PlaySoundOnce();
+		win_announced = true;
 	}
 	else if (win_type == 3) {
 		Resource_manager::GetImage("draw")->Render();
 		Resource_manager::GetSound("draw")->PlaySoundOnce();
+		win_announced = true;
 	}
 }
 
@@ -124,9 +141,8 @@ void Play_state_One::AdvanceGame() {
 			return;
 		}
 	}
-
 	// Human player's turn
-	if (!win_type && sprite_to_play == Board::Sprites::yellow && !firsttime) {
+	else if (!win_type && sprite_to_play == Board::Sprites::yellow && !firsttime) {
 		// Get mouse coords and normalize to column
 		int mouse_x;
 		int mouse_y;
@@ -140,14 +156,6 @@ void Play_state_One::AdvanceGame() {
 			Resource_manager::GetSound("invalid_move")->PlaySound();
 			return; // Exit if the column full
 		}
-	}
-
-	// Reset the game if there's a winner or draw
-	if (win_type) {
-		win_type = 0;
-		sprite_to_play = Board::Sprites::red;
-		board.Clear();
-		State_manager::SetState(new Menu_state());
 	}
 }
 
