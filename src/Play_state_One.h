@@ -33,7 +33,7 @@ private:
 
 	int GetAIMove();
 
-	int Minimax(int depth, bool isMaximizingPlayer);
+	int Minimax(int depth, bool isMaximizingPlayer, int alpha, int beta);
 
 	bool CheckForDraw();
 

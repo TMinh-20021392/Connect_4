@@ -5,6 +5,7 @@
 #include "Resource_manager.h"
 #include "Menu_state.h"
 #include <random>
+#include <iostream>
 
 // Default constructor
 Play_state_One::Play_state_One() : sprite_to_play(Board::Sprites::red), win_type(0), ai_first(true), firsttime(true), win_announced(false) {}
@@ -176,43 +177,6 @@ void Play_state_One::AdvanceGame() {
 }
 
 int Play_state_One::GetAIMove() {
-	//std::vector<int> available_columns;
-
-	//// Find all available columns
-	//for (int col = 0; col < Setting::grid_columns; ++col) {
-	//	if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
-	//		available_columns.push_back(col);
-	//	}
-	//}
-
-	//// If there are available columns, find the best move using Minimax
-	//if (!available_columns.empty()) {
-	//	int bestScore = INT_MIN;
-	//	int bestMove = -1;
-
-	//	for (int col : available_columns) {
-	//		// Simulate a move for the AI player
-	//		int row = board.GetBottommostAvailableRowInColumn(col);
-	//		board.cells[col][row].played_by = ai_first ? Board::Players::red : Board::Players::yellow;
-
-	//		// Calculate the score for this move using Minimax
-	//		int score = Minimax(5, false);
-
-	//		// Undo the simulated move
-	//		board.cells[col][row].played_by = Board::Players::nobody;
-
-	//		// Update the best move if this move has a higher score
-	//		if (score > bestScore) {
-	//			bestScore = score;
-	//			bestMove = col;
-	//		}
-	//	}
-
-	//	return bestMove;
-	//}
-
-	//// If no available columns, return -1
-	//return -1;
 	std::vector<int> available_columns;
 
 	// Find all available columns
@@ -222,7 +186,7 @@ int Play_state_One::GetAIMove() {
 		}
 	}
 
-	// If there are available columns, choose a random move
+	// If there are available columns, select one at random
 	if (!available_columns.empty()) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -234,48 +198,52 @@ int Play_state_One::GetAIMove() {
 	return -1;
 }
 
-int Play_state_One::Minimax(int depth, bool isMaximizingPlayer) {
-	if (depth == 0 || CheckForDraw()) {
+/// <summary>
+/// Currently on works when AI play second
+/// </summary>
+/// <param name="depth"></param>
+/// <param name="isMaximizingPlayer"></param>
+/// <param name="alpha"></param>
+/// <param name="beta"></param>
+/// <returns></returns>
+int Play_state_One::Minimax(int depth, bool isMaximizingPlayer, int alpha, int beta) {
+	if (depth == 0 || win_type != 0 || CheckForDraw()) {
 		return EvaluateBoard();
 	}
 
 	if (isMaximizingPlayer) {
-		int bestScore = INT_MIN;
+		int maxEval = std::numeric_limits<int>::min();
 		for (int col = 0; col < Setting::grid_columns; ++col) {
-			if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
-				// Simulate a move for the AI player
-				int row = board.GetBottommostAvailableRowInColumn(col);
-				board.cells[col][row].played_by = Board::Players::yellow;
-
-				// Recur for the next depth with the opponent's turn
-				int score = Minimax(depth - 1, false);
-
-				// Undo the simulated move
+			int row = board.GetBottommostAvailableRowInColumn(col);
+			if (row >= 0) {
+				board.cells[col][row].played_by = ai_first ? Board::Players::red : Board::Players::yellow;
+				int eval = Minimax(depth - 1, false, alpha, beta);
 				board.cells[col][row].played_by = Board::Players::nobody;
-
-				bestScore = std::max(bestScore, score);
+				maxEval = std::max(maxEval, eval);
+				alpha = std::max(alpha, eval);
+				if (beta <= alpha) {
+					break;
+				}
 			}
 		}
-		return bestScore;
+		return maxEval;
 	}
 	else {
-		int bestScore = INT_MAX;
+		int minEval = std::numeric_limits<int>::max();
 		for (int col = 0; col < Setting::grid_columns; ++col) {
-			if (board.GetBottommostAvailableRowInColumn(col) >= 0) {
-				// Simulate a move for the human player
-				int row = board.GetBottommostAvailableRowInColumn(col);
-				board.cells[col][row].played_by = Board::Players::red;
-
-				// Recur for the next depth with the AI player's turn
-				int score = Minimax(depth - 1, true);
-
-				// Undo the simulated move
+			int row = board.GetBottommostAvailableRowInColumn(col);
+			if (row >= 0) {
+				board.cells[col][row].played_by = ai_first ? Board::Players::yellow : Board::Players::red;
+				int eval = Minimax(depth - 1, true, alpha, beta);
 				board.cells[col][row].played_by = Board::Players::nobody;
-
-				bestScore = std::min(bestScore, score);
+				minEval = std::min(minEval, eval);
+				beta = std::min(beta, eval);
+				if (beta <= alpha) {
+					break;
+				}
 			}
 		}
-		return bestScore;
+		return minEval;
 	}
 }
 
