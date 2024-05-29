@@ -8,10 +8,10 @@
 #include <iostream>
 
 // Default constructor
-Play_state_One::Play_state_One() : sprite_to_play(Board::Sprites::red), win_type(0), ai_first(true), firsttime(true), win_announced(false) {}
+Play_state_One::Play_state_One() : win_type(0) {}
 
 // New constructor with ai_first parameter
-Play_state_One::Play_state_One(bool ai_first) : sprite_to_play(Board::Sprites::red), win_type(0), drop_speed(8), ai_first(ai_first), firsttime(true), win_announced(false) {}
+Play_state_One::Play_state_One(bool ai_first) : win_type(0), ai_first(ai_first) {}
 
 void Play_state_One::Init()
 {
@@ -48,8 +48,8 @@ void Play_state_One::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide 16 and <=16, else glitch
-	drop_speed = 8;
+	// Must divided by 16 and <=16, else glitch
+	drop_speed = 16;
 
 	// Prevent mouse click event from Menu interfere with play
 	firsttime = true;
@@ -122,7 +122,7 @@ void Play_state_One::Render()
 	if (win_type != 0) {
 		win_announced = true;
 	}
-	// Depending on win or draw conditions, display a win or draw message overlay image
+	// Display message overlay image based on win/draw con
 	if (win_type == 1) {
 		Resource_manager::GetImage("red_wins")->Render();
 		Resource_manager::GetImage("menu")->Render();
@@ -186,8 +186,36 @@ int Play_state_One::GetAIMove() {
 		}
 	}
 
-	// If there are available columns, select one at random
-	if (!available_columns.empty()) {
+	// 1. Check for a winning move
+	for (int col : available_columns) {
+		int row = board.GetBottommostAvailableRowInColumn(col);
+		board.cells[col][row].played_by = Board::Players::yellow;
+		if (board.CheckWin(col, row, Board::Players::yellow)) {
+			board.cells[col][row].played_by = Board::Players::nobody; // Undo move
+			return col;
+		}
+		board.cells[col][row].played_by = Board::Players::nobody; // Undo move
+	}
+
+	// 2. Block the opponent's winning move
+	for (int col : available_columns) {
+		int row = board.GetBottommostAvailableRowInColumn(col);
+		board.cells[col][row].played_by = Board::Players::red;
+		if (board.CheckWin(col, row, Board::Players::red)) {
+			board.cells[col][row].played_by = Board::Players::nobody; // Undo move
+			return col;
+		}
+		board.cells[col][row].played_by = Board::Players::nobody; // Undo move
+	}
+
+	// 3. Prefer the center column
+	int center_col = Setting::grid_columns / 2;
+	if (std::find(available_columns.begin(), available_columns.end(), center_col) != available_columns.end()) {
+		return center_col;
+	}
+
+	// 4. Otherwise, choose randomly from available columns
+	else if (!available_columns.empty()) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dis(0, available_columns.size() - 1);
@@ -196,55 +224,6 @@ int Play_state_One::GetAIMove() {
 
 	// If no available columns, return -1
 	return -1;
-}
-
-/// <summary>
-/// Currently on works when AI play second
-/// </summary>
-/// <param name="depth"></param>
-/// <param name="isMaximizingPlayer"></param>
-/// <param name="alpha"></param>
-/// <param name="beta"></param>
-/// <returns></returns>
-int Play_state_One::Minimax(int depth, bool isMaximizingPlayer, int alpha, int beta) {
-	if (depth == 0 || win_type != 0 || CheckForDraw()) {
-		return EvaluateBoard();
-	}
-
-	if (isMaximizingPlayer) {
-		int maxEval = std::numeric_limits<int>::min();
-		for (int col = 0; col < Setting::grid_columns; ++col) {
-			int row = board.GetBottommostAvailableRowInColumn(col);
-			if (row >= 0) {
-				board.cells[col][row].played_by = ai_first ? Board::Players::red : Board::Players::yellow;
-				int eval = Minimax(depth - 1, false, alpha, beta);
-				board.cells[col][row].played_by = Board::Players::nobody;
-				maxEval = std::max(maxEval, eval);
-				alpha = std::max(alpha, eval);
-				if (beta <= alpha) {
-					break;
-				}
-			}
-		}
-		return maxEval;
-	}
-	else {
-		int minEval = std::numeric_limits<int>::max();
-		for (int col = 0; col < Setting::grid_columns; ++col) {
-			int row = board.GetBottommostAvailableRowInColumn(col);
-			if (row >= 0) {
-				board.cells[col][row].played_by = ai_first ? Board::Players::yellow : Board::Players::red;
-				int eval = Minimax(depth - 1, true, alpha, beta);
-				board.cells[col][row].played_by = Board::Players::nobody;
-				minEval = std::min(minEval, eval);
-				beta = std::min(beta, eval);
-				if (beta <= alpha) {
-					break;
-				}
-			}
-		}
-		return minEval;
-	}
 }
 
 bool Play_state_One::CheckForDraw() {

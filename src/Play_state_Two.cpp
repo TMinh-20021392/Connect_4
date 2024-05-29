@@ -40,8 +40,8 @@ void Play_state_Two::Init()
 	previous_play_row = -1;
 	previous_play_sprite = Board::Sprites::red;
 
-	// Must divide 16 and <=16, else glitch
-	drop_speed = 8;
+	// Must divided by 16 and <=16, else glitch
+	drop_speed = 16;
 }
 
 void Play_state_Two::Clean()
@@ -87,7 +87,7 @@ void Play_state_Two::Render()
 		return;
 	}
 
-	// Depending on win or draw conditions, display a win or draw message overlay image
+	// Display message overlay image based on win/draw con
 	if (win_type == 1) {
 		Resource_manager::GetImage("red_wins")->Render();
 		Resource_manager::GetImage("menu")->Render();

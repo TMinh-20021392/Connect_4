@@ -4,7 +4,7 @@
 #include "Board.h"
 
 /**
- * State implementation for handling the game play state
+ * State implementation for handling game play state
  */
 class Play_state_Two : public State
 {
@@ -15,13 +15,12 @@ public:
 	void Render() override;
 	void Clean() override;
 private:
-	/// Instance of the Board class
 	Board board;
 
 	/// The sprite colour to be played and be toggled throughout moves. Red goes first
 	Board::Sprites sprite_to_play = Board::Sprites::red;
 
-	/// Holds red (1), yellow (2) or draw (3)
+	/// Holds red (1), yellow (2), draw (3)
 	int win_type;
 
 	/**
@@ -37,27 +36,25 @@ private:
 	bool Play(int col, int row);
 
 	/**
-	 * See if the grid contains a win or if all moves have been made
-	 *
-	 * @return True if a win or draw was found
+	 * True if a win or draw was found
 	 */
 	bool CheckForGameEnd(int col, int row);
 
-	/// X, Y and to Y values for red piece drop animation
+	/// X, Y and to Y values for red drop animation
 	int red_piece_x;
 	int red_piece_y;
 	int red_piece_to_y;
 
-	/// X, Y and to Y values for yellow piece drop animation
+	/// X, Y and to Y values for yellow drop animation
 	int yellow_piece_x;
 	int yellow_piece_y;
 	int yellow_piece_to_y;
 
-	/// Store the column and row of last move
+	/// Store column and row of last move
 	int previous_play_col;
 	int previous_play_row;
 
-	/// Store the previous sprite (red or yellow) of the last move
+	/// Store previous sprite (red or yellow) of the last move
 	Board::Sprites previous_play_sprite;
 
 	/// Animation speed for dropping piece
@@ -69,9 +66,7 @@ private:
 	void AnimateDroppingPiece();
 
 	/**
-	 * Check if the drop animation is playing
-	 *
-	 * @return true if the animation is still playing
+	 * Check if drop animation is playing
 	 */
 	bool IsDropAnimationPlaying();
 
