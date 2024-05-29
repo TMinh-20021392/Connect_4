@@ -186,11 +186,15 @@ int Play_state_One::GetAIMove() {
 		}
 	}
 
-	// 1. Check for a winning move
+	// Define the AI and opponent players based on who goes first
+	Board::Players ai_player = ai_first ? Board::Players::red : Board::Players::yellow;
+	Board::Players opponent_player = ai_first ? Board::Players::yellow : Board::Players::red;
+
+	// 1. Check for a winning move for the AI
 	for (int col : available_columns) {
 		int row = board.GetBottommostAvailableRowInColumn(col);
-		board.cells[col][row].played_by = Board::Players::yellow;
-		if (board.CheckWin(col, row, Board::Players::yellow)) {
+		board.cells[col][row].played_by = ai_player;
+		if (board.CheckWin(col, row, ai_player)) {
 			board.cells[col][row].played_by = Board::Players::nobody; // Undo move
 			return col;
 		}
@@ -200,8 +204,8 @@ int Play_state_One::GetAIMove() {
 	// 2. Block the opponent's winning move
 	for (int col : available_columns) {
 		int row = board.GetBottommostAvailableRowInColumn(col);
-		board.cells[col][row].played_by = Board::Players::red;
-		if (board.CheckWin(col, row, Board::Players::red)) {
+		board.cells[col][row].played_by = opponent_player;
+		if (board.CheckWin(col, row, opponent_player)) {
 			board.cells[col][row].played_by = Board::Players::nobody; // Undo move
 			return col;
 		}
@@ -215,7 +219,7 @@ int Play_state_One::GetAIMove() {
 	}
 
 	// 4. Otherwise, choose randomly from available columns
-	else if (!available_columns.empty()) {
+	if (!available_columns.empty()) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dis(0, available_columns.size() - 1);
@@ -225,6 +229,7 @@ int Play_state_One::GetAIMove() {
 	// If no available columns, return -1
 	return -1;
 }
+
 
 bool Play_state_One::CheckForDraw() {
 	for (int col = 0; col < Setting::grid_columns; ++col) {
