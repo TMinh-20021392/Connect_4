@@ -63,7 +63,7 @@ void Image_resource::SetPosition(int x, int y) {
 
 void Image_resource::SetPositionWithSize(int x, int y, int w, int h) {
 
-	// Update the X and Y positions for render
+	// Update X and Y positions for render
 	position_x = x;
 	position_y = y;
 
@@ -102,7 +102,6 @@ void Image_resource::Render(SDL_Rect* clip_rect)
 		height * Setting::scale_factor
 	};
 
-	// If using a sprite dest_rect needs to use the width and height of single sprite not the entire sprite sheet
 	if (clip_rect != nullptr) {
 		dest_rect.w = clip_rect->w * Setting::scale_factor;
 		dest_rect.h = clip_rect->h * Setting::scale_factor;
