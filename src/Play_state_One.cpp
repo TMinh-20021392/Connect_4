@@ -188,7 +188,7 @@ int Play_state_One::GetAIMove() {
 
 	// Define the AI and opponent players based on who goes first
 	Board::Players ai_player = ai_first ? Board::Players::red : Board::Players::yellow;
-	Board::Players opponent_player = ai_first ? Board::Players::yellow : Board::Players::red;
+	Board::Players human_player = ai_first ? Board::Players::yellow : Board::Players::red;
 
 	// 1. Check for a winning move for the AI
 	for (int col : available_columns) {
@@ -204,8 +204,8 @@ int Play_state_One::GetAIMove() {
 	// 2. Block the opponent's winning move
 	for (int col : available_columns) {
 		int row = board.GetBottommostAvailableRowInColumn(col);
-		board.cells[col][row].played_by = opponent_player;
-		if (board.CheckWin(col, row, opponent_player)) {
+		board.cells[col][row].played_by = human_player;
+		if (board.CheckWin(col, row, human_player)) {
 			board.cells[col][row].played_by = Board::Players::nobody; // Undo move
 			return col;
 		}
