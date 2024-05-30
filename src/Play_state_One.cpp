@@ -230,7 +230,6 @@ int Play_state_One::GetAIMove() {
 	return -1;
 }
 
-
 bool Play_state_One::CheckForDraw() {
 	for (int col = 0; col < Setting::grid_columns; ++col) {
 		if (board.GetBottommostAvailableRowInColumn(col) >= 0) {

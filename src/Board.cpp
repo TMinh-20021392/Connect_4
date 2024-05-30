@@ -209,7 +209,7 @@ bool Board::DropPiece(int col, Players player)
 		if (row != -1) {
 			// Set player owning the cell
 			cells[col][row].played_by = player;
-			// True if a piece drops successfully
+			// True if piece drops successfully
 			return true;
 		}
 	}
