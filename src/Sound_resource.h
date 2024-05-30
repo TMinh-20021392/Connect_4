@@ -19,7 +19,7 @@ public:
 	void PlaySound();
 
 	/**
-	 * Plays the loaded sound only once regardless of how many times this function is called, then never plays again
+	 * Plays the loaded sound only once regardless of how many times this function is called, then prevents from ever playing again
 	 */
 	void PlaySoundOnce();
 
