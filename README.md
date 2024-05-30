@@ -31,8 +31,8 @@ The menu provides options to start a new game, quit the program, or select the m
 In the 1-player mode, you will play against an AI opponent. The AI is programmed to make strategic moves based on the current game state.
 
 ## To Do
-- Implement alternation of order to play in 1-player mode.
-- Add "Play again" and "Menu" buttons for better user experience.
+- Implement choice of order to play in 1-player mode.
+- Add more QoL features.
 
 ## Credits
 
