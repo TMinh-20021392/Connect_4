@@ -21,13 +21,13 @@ struct Setting
 	/// Set first element to -1 to disable colour keying, otherwise set to a colour such as { 0, 0xFF, 0xFF }
 	static const int color_key[];
 
-	/// Changing the scale factor adjusts the size of images and window
+	/// Changing the scale factor adjusts size of images and window
 	static const int scale_factor = 8;
 
-	/// Width of clipped sprite sheet image used for the grid
+	/// Width of clipped sprite sheet image used for grid
 	static const int grid_sprite_width = 16;
 
-	/// Height of clipped sprite sheet image used for the grid
+	/// Height of clipped sprite sheet image used for grid
 	static const int grid_sprite_height = 16;
 
 	static const int grid_columns = 7;
@@ -43,9 +43,9 @@ struct Setting
 	/// App window height
 	static const int window_height = grid_rows * grid_sprite_height;
 
-	/// Game area width without the scaling factor
+	/// Game area width without scaling factor
 	static const int actual_window_width = window_width * scale_factor;
 
-	/// Game area height without the scaling factor
+	/// Game area height without scaling factor
 	static const int actual_window_height = window_height * scale_factor;
 };
