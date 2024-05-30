@@ -25,7 +25,7 @@ public:
 	 * @param title App window title
 	 * @return True if init succeed
 	 */
-	bool Init(const char* title, int window_width, int window_height);
+	bool Init(const char* title, int window_width, int window_height) const;
 
 	/**
 	 * Game loop until Stop() is called

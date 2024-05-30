@@ -4,14 +4,7 @@
 #include "Game.h"
 #include "Setting.h"
 
-Image_resource::Image_resource()
-{
-	texture = nullptr;
-	width = 0;
-	height = 0;
-	position_x = 0;
-	position_y = 0;
-}
+Image_resource::Image_resource() : texture(nullptr), width(0), height(0), position_x(0), position_y(0) {}
 
 Image_resource::~Image_resource()
 {

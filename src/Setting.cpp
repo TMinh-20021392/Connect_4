@@ -2,8 +2,6 @@
 
 const char* Setting::game_name = "Connect Four";
 
-// Set to nullptr to use the default icon. Be careful as images that are too big
-// don't always load.
 const char* Setting::icon_path = "images/icon16.bmp";
 
 const std::string Setting::image_path = "images/";

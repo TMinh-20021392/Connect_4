@@ -31,7 +31,7 @@ SDL_Renderer* Game::GetRenderer()
 	return renderer;
 }
 
-bool Game::Init(const char* title, int window_width, int window_height)
+bool Game::Init(const char* title, int window_width, int window_height) const
 {
 	// Init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
